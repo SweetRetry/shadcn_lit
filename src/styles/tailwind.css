@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  body,
+  .ex-container {
     @apply bg-background text-foreground;
   }
 }
-
-

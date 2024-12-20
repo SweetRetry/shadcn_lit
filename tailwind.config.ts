@@ -8,7 +8,6 @@ const config: Omit<Config, "content"> = {
   theme: {
     container: {
       center: true,
-      padding: "1rem",
       screens: {
         sm: "640px",
         md: "768px",
@@ -17,6 +16,9 @@ const config: Omit<Config, "content"> = {
       },
     },
     extend: {
+      transitionProperty: {
+        height: "height",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -78,6 +80,7 @@ const config: Omit<Config, "content"> = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+
+  plugins: [require("tailwindcss-animate"), "prettier-plugin-tailwindcss"],
 };
 export default config;
