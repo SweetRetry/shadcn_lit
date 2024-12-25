@@ -1,5 +1,5 @@
 import "@/components/ui/ex-button";
-import "@/components/ui/ex-form";
+import "@/components/ui/ex-form/element";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-modal";
 
@@ -7,7 +7,7 @@ import { ExModal } from "@/components/ui/ex-modal";
 import { v4 as uuidv4 } from "uuid";
 
 import { ExResponse } from "@/api";
-import { ExForm } from "@/components/ui/ex-form";
+import { ExForm } from "@/components/ui/ex-form/element";
 import { produce } from "immer";
 import { html } from "lit";
 import { translate as t } from "lit-i18n";
@@ -108,7 +108,7 @@ export class ExVerifyModal extends TailwindElement {
   protected handleVerify = async () => {
     if (!this.verifyFormRef) return;
 
-    const { values } = await this.verifyFormRef.validate();
+    const values = await this.verifyFormRef.validate();
     if (!values) return;
 
     this.loading = true;

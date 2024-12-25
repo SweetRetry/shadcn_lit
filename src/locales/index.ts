@@ -50,6 +50,7 @@ export class I18nUtil {
         return i18next.changeLanguage(locale);
       }
 
+      /* @vite-ignore */
       const resources = await import(resourcePath);
       i18next.addResourceBundle(locale, "translation", resources.default);
       I18nCacheMap.set(locale, resourcePath);

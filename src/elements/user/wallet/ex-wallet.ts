@@ -1,17 +1,16 @@
+import TailwindElement from "@/components/tailwind-element";
 import "@/components/ui-extends/link";
 import "@/components/ui/ex-button";
 import "@/components/ui/ex-checkbox";
 import { ExCheckbox } from "@/components/ui/ex-checkbox";
 import { CoinController } from "@/controllers/coin-controller";
 import { WalletController, WalletInfo } from "@/controllers/wallet-controller";
-
 import { cryptoPrecisionFormat, currencyFormat } from "@/utils/format";
 import { EX_MODULE_ENUM } from "@/utils/module";
 import currency from "currency.js";
 import { html } from "lit";
 import { translate as t } from "lit-i18n";
 import { customElement, state } from "lit/decorators.js";
-import TailwindElement from "../../components/tailwind-element";
 
 @customElement("ex-wallet")
 export class ExWallet extends TailwindElement {
@@ -114,7 +113,7 @@ export class ExWallet extends TailwindElement {
   }
   render() {
     const wallet = this.walletController.wallet;
-    return html` <section class="h-full rounded p-4 border border-border">
+    return html` <section class="h-full rounded border border-border p-4">
       <ex-spinner
         .loading=${this.walletController.isGettingWalletInfo ||
         this.coinController.isGettingCoinList}

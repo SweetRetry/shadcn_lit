@@ -1,4 +1,4 @@
-import { VerifyValues } from "@/controllers/verify-controller";
+import { VerifyValues } from "@/components/verify/ex-verify-modal";
 import { ExResponse, request } from "..";
 
 // 钱包账户
@@ -41,3 +41,10 @@ export const postWalletWithdraw = (
       "request-id": requestId,
     },
   });
+
+export const getWalletRecord = (params: {
+  coin?: string;
+  type: "DEPOSIT" | "WITHDRAW";
+  page: number;
+  size: number;
+}): Promise<ExResponse> => request.get("/wallet/record", { params });

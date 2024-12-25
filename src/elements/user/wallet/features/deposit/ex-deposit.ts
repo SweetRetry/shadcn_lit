@@ -2,21 +2,22 @@ import { getDepositConfig, getWalletNetwork } from "@/api/wallet";
 import TailwindElement from "@/components/tailwind-element";
 import "@/components/ui-extends/link";
 import "@/components/ui/ex-copyable";
-import "@/components/ui/ex-form";
+import "@/components/ui/ex-form/element";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-select";
+import { CoinController } from "@/controllers/coin-controller";
 import { EX_MODULE_ENUM } from "@/utils/module";
 import { translate as t } from "lit-i18n";
-import { CoinController } from "./../../../controllers/coin-controller";
 
-import { ExForm } from "@/components/ui/ex-form";
+import { ExForm } from "@/components/ui/ex-form/element";
 
 import { html } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
+import { createRef, Ref, ref } from "lit/directives/ref.js";
 
 @customElement("ex-deposit")
 export class ExDeposit extends TailwindElement {
-  coinController = new CoinController(this);
+  private coinController = new CoinController(this);
 
   @state()
   formState = {
@@ -24,7 +25,7 @@ export class ExDeposit extends TailwindElement {
     net: "",
   };
 
-  @query("ex-form") exForm!: ExForm<typeof this.formState>;
+  formRef: Ref<ExForm<typeof this.formState>> = createRef();
 
   @state()
   networks: WalletNetwork[] = [];
@@ -43,7 +44,7 @@ export class ExDeposit extends TailwindElement {
       ...this.formState,
       net,
     };
-    const _formData = this.exForm?.getFieldsValue();
+    const _formData = this.formRef?.value?.getFieldsValue();
 
     if (_formData?.coin && net) {
       this.loading = true;
@@ -58,7 +59,7 @@ export class ExDeposit extends TailwindElement {
   }
 
   async getNetworks() {
-    const _formData = this.exForm?.getFieldsValue();
+    const _formData = this.formRef?.value?.getFieldsValue();
 
     const _coin = _formData?.coin || "USDE";
 
@@ -98,7 +99,10 @@ export class ExDeposit extends TailwindElement {
         ← ${t("ZbyFlQ82c4TkhC-Te0z0_")}
       </ex-link>
 
-      <ex-form .formState=${this.formState}>
+      <ex-form
+        .formState=${this.formState}
+        ${ref(this.formRef)}
+      >
         <ex-form-item
           label="${t("SFyzijuyLIdw6u62SJLxd")}"
           name="coin"
@@ -147,7 +151,9 @@ export class ExDeposit extends TailwindElement {
                 class="mx-auto"
                 src=${this.config?.code}
               />
-              <p class="text-sm text-gray-600">${t("XEuxY_V9UgZhpwkcbs7Cq")}</p>
+              <p class="mt-2 text-sm text-gray-600">
+                ${t("XEuxY_V9UgZhpwkcbs7Cq")}
+              </p>
             </div>
           </ex-form-item>
 

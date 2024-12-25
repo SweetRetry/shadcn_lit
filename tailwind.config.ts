@@ -74,7 +74,7 @@ const config: Omit<Config, "content"> = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       screens: {
-        mobile: { max: "767px" },
+        mobile: { max: "768px" },
         tablet: { min: "768px", max: "1023px" },
         pc: "1024px",
       },

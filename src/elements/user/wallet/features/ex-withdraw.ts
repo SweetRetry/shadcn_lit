@@ -2,8 +2,8 @@ import { getWalletNetwork, postWalletWithdraw } from "@/api/wallet";
 import TailwindElement from "@/components/tailwind-element";
 import "@/components/ui-extends/link";
 import "@/components/ui/ex-button";
-import "@/components/ui/ex-form";
-import { ExForm } from "@/components/ui/ex-form";
+import "@/components/ui/ex-form/element";
+import { ExForm } from "@/components/ui/ex-form/element";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-modal";
 import { ExModal } from "@/components/ui/ex-modal";
@@ -12,20 +12,19 @@ import "@/components/ui/ex-spinner";
 import "@/components/verify/ex-verify-modal";
 import { Big } from "big.js";
 import { produce } from "immer";
+import { ExVerifyModal } from "./../../../../components/verify/ex-verify-modal";
 
 import { CoinController } from "@/controllers/coin-controller";
 import { WalletController } from "@/controllers/wallet-controller";
 import { cryptoPrecisionFormat } from "@/utils/format";
 
-import {
-  ExVerifyModal,
-  VerifyConfig,
-} from "@/components/verify/ex-verify-modal";
+import { VerifyConfig } from "@/components/verify/ex-verify-modal";
 import { EX_MODULE_ENUM } from "@/utils/module";
 import { cn } from "@/utils/style";
 import { html, nothing } from "lit";
 import { translate as t } from "lit-i18n";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 const ininitialState = {
   coin: "USDE",
@@ -41,9 +40,9 @@ export class ExWithdraw extends TailwindElement {
   coinController = new CoinController(this);
   walletController = new WalletController(this);
 
-  @query("ex-form") exForm!: ExForm<typeof ininitialState>;
-  @query("ex-modal") exModal!: ExModal;
-  @query("ex-verify-modal") exVerifyModal!: ExVerifyModal;
+  formRef = createRef<ExForm<typeof ininitialState>>();
+  modalRef = createRef<ExModal>();
+  verifyModalRef = createRef<ExVerifyModal>();
 
   @state()
   formState = { ...ininitialState };
@@ -87,6 +86,25 @@ export class ExWithdraw extends TailwindElement {
         type: "required",
         message: t("gWdzqffu61uCKOqb3-VIM"),
       },
+      {
+        validator: async (value: string) => {
+          // value不为正整数提示输入正整数
+          if (!/^\d+$/.test(value)) {
+            return Promise.reject(t("vyAfAUot6ygBMGuT8qzRH"));
+          }
+
+          const availabelAmount = this.walletController.getCoinAvailableAmount(
+            this.formState.coin,
+          );
+
+          if (!availabelAmount)
+            return Promise.reject("Invalid withdraw amount");
+
+          if (Big(value).gt(availabelAmount)) {
+            return Promise.reject("Insufficient balance");
+          }
+        },
+      },
     ],
     target: [
       {
@@ -112,7 +130,7 @@ export class ExWithdraw extends TailwindElement {
     });
   };
   async getNetworks() {
-    const _formData = this.exForm?.getFieldsValue();
+    const _formData = this.formRef.value?.getFieldsValue();
 
     const _coin = _formData?.coin || "USDE";
 
@@ -138,12 +156,16 @@ export class ExWithdraw extends TailwindElement {
     const shouldValidateKeys = ["coin", "amount"].concat(
       type === "OUTER" ? ["addr", "net"] : ["target"],
     ) as Array<keyof typeof ininitialState>;
-    const { values } = await this.exForm.validate(shouldValidateKeys);
-    if (values) {
-      const res = await postWalletWithdraw(values);
-      if (res.statusCode === 200) {
-        this.exVerifyModal.show(res.content as VerifyConfig);
+    try {
+      const values = await this.formRef.value?.validate(shouldValidateKeys);
+      if (values) {
+        const res = await postWalletWithdraw(values);
+        if (res.statusCode === 200) {
+          this.verifyModalRef?.value?.show(res.content as VerifyConfig);
+        }
       }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -175,8 +197,8 @@ export class ExWithdraw extends TailwindElement {
   protected handleSelectNetwork = ({ network }: WalletNetwork) => {
     if (this.formState.net === network) return;
     this.setFormState("net", network);
-    this.formState.addr && this.exForm.validate(["addr"]);
-    this.exModal?.close();
+    this.formState.addr && this.formRef?.value?.validate(["addr"]);
+    this.modalRef?.value?.close();
   };
 
   protected renderWithdrawTargetStep() {
@@ -222,7 +244,7 @@ export class ExWithdraw extends TailwindElement {
                 disabled
                 .value=${this.formState.net}
                 placeholder="${t("JK8TNck3PIZmO1xWzgd2L")}"
-                @click=${() => this.exModal?.show()}
+                @click=${() => this.modalRef.value?.show()}
                 .labelRender=${(
                   option: WalletNetwork & {
                     label: string;
@@ -253,7 +275,10 @@ export class ExWithdraw extends TailwindElement {
         : true,
     }));
 
-    return html` <ex-modal title="${t("JK8TNck3PIZmO1xWzgd2L")}">
+    return html` <ex-modal
+      title="${t("JK8TNck3PIZmO1xWzgd2L")}"
+      ${ref(this.modalRef)}
+    >
       <p class="rounded bg-accent p-2 text-sm text-accent-foreground">
         ${t("44Og7j1RHGjp5kCBmm386")}
       </p>
@@ -405,7 +430,9 @@ export class ExWithdraw extends TailwindElement {
                       availabelAmount || 0,
                     ).toString(),
                   );
-                  requestAnimationFrame(() => this.exForm.validate(["amount"]));
+                  requestAnimationFrame(() =>
+                    this.formRef.value?.validate(["amount"]),
+                  );
                 }}"
               >
                 MAX
@@ -432,6 +459,7 @@ export class ExWithdraw extends TailwindElement {
           </ex-link>
 
           <ex-form
+            ${ref(this.formRef)}
             .formState=${this.formState}
             @change=${(e: CustomEvent) =>
               this.setFormState(e.detail.key, e.detail.value)}
@@ -446,6 +474,7 @@ export class ExWithdraw extends TailwindElement {
 
       ${this.renderNetworkModal()}
       <ex-verify-modal
+        ${ref(this.verifyModalRef)}
         .callbacks=${{
           submit: postWalletWithdraw,
         }}

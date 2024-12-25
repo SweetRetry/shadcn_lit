@@ -1,4 +1,5 @@
 import "@/components/ui/ex-button";
+import { ScreenController } from "@/controllers/screen-controller";
 import { cn } from "@/utils/style";
 import { html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
@@ -6,6 +7,7 @@ import TailwindElement from "../tailwind-element";
 
 @customElement("ex-modal")
 export class ExModal extends TailwindElement {
+  screenController = new ScreenController(this);
   @property({ type: String })
   title = "";
 
@@ -16,9 +18,6 @@ export class ExModal extends TailwindElement {
   closeOnMaskClick = true;
 
   @state()
-  isMobile = false;
-
-  @state()
   closing = false;
 
   @property()
@@ -26,9 +25,6 @@ export class ExModal extends TailwindElement {
 
   @query(".mask") mask!: HTMLDivElement;
   @query(".modal-content") modalContent!: HTMLDivElement;
-  resizeListener = () => {
-    this.isMobile = window.innerWidth < 640;
-  };
 
   show() {
     this.closing = false;
@@ -50,17 +46,14 @@ export class ExModal extends TailwindElement {
 
   connectedCallback(): void {
     super.connectedCallback();
-    window.addEventListener("resize", this.resizeListener);
-    this.resizeListener();
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    window.removeEventListener("resize", this.resizeListener);
   }
 
   render() {
-    if (this.isMobile) {
+    if (this.screenController.isMobile) {
       return html`<div
         @click=${this.closeOnMaskClick ? this.close : null}
         class=${cn(
@@ -81,7 +74,7 @@ export class ExModal extends TailwindElement {
           @click=${(e: MouseEvent) => e.stopPropagation()}
         >
           <header class="flex items-center justify-between px-4 py-3">
-            <h2 class="text-lg">${this.title}</h2>
+            <h2 class="text-lg font-bold">${this.title}</h2>
 
             <ex-button
               @click=${() => (this.open = false)}
@@ -123,7 +116,7 @@ export class ExModal extends TailwindElement {
         style="width: ${this.width}px"
       >
         <header class="mb-2 flex items-center justify-between">
-          <h2 class="text-lg">${this.title}</h2>
+          <h2 class="text-lg font-bold">${this.title}</h2>
 
           <ex-button
             @click=${() => (this.open = false)}

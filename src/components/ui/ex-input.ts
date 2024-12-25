@@ -3,7 +3,7 @@ import { consume } from "@lit/context";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
-import { formContext, FormContextProvide } from "./ex-form";
+import { formContext, FormContextProvide } from "./ex-form/element";
 
 @customElement("ex-input")
 export class ExInput extends TailwindElement {

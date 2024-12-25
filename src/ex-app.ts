@@ -10,12 +10,13 @@ import "@/providers/user-provider";
 import { EX_MODULE_ENUM, loadExModule } from "@/utils/module";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { createElement, Globe, Moon, Sun } from "lucide";
+import { Globe, Moon, Sun } from "lucide";
 import { I18nUtil } from "./locales";
+import { createLucideIcon } from "./utils/icon";
 
-const GlobeIcon = createElement(Globe);
-const MoonIcon = createElement(Moon);
-const SunIcon = createElement(Sun);
+const GlobeIcon = createLucideIcon(Globe);
+const MoonIcon = createLucideIcon(Moon);
+const SunIcon = createLucideIcon(Sun);
 
 interface ExAppConfig {
   user?: {
@@ -116,11 +117,12 @@ export class ExApp extends TailwindElement {
         <user-provider ?config=${this.config?.user}>
           <main class="ex-container relative flex h-full">
             <header
-              class="fixed left-0 top-0 flex h-12 w-full items-center justify-between px-8"
+              class="fixed left-0 top-0 flex h-12 w-full items-center justify-between px-8 mobile:px-4"
             >
               <div></div>
-              <div>
+              <div class="space-x-4">
                 <ex-button
+                  size="icon"
                   variant="ghost"
                   @click=${() => {
                     document.documentElement.classList.toggle("dark");
@@ -133,6 +135,7 @@ export class ExApp extends TailwindElement {
                 <ex-dropdown placement="bottom-end">
                   <ex-button
                     slot="trigger"
+                    size="icon"
                     variant="ghost"
                   >
                     ${GlobeIcon}
@@ -150,13 +153,15 @@ export class ExApp extends TailwindElement {
               </div>
             </header>
 
-            <div class="h-full w-full py-12 mobile:pb-0">
+            <section
+              class="container h-full w-full space-x-4 py-12 mobile:pb-0"
+            >
               <ex-spinner .loading=${this.loading}>
-                <section class="mx-auto h-full max-w-screen-sm rounded">
+                <section class="h-full rounded">
                   ${this.renderDynamicElement(this.tag)}
                 </section>
               </ex-spinner>
-            </div>
+            </section>
           </main>
         </user-provider>
       </i18n-provider>

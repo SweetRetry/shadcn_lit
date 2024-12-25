@@ -11,7 +11,7 @@ import { consume } from "@lit/context";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
-import { formContext, FormContextProvide } from "./ex-form";
+import { formContext, FormContextProvide } from "./ex-form/element";
 import { ChevronDown, ChevronUp } from "./ex-icons";
 
 @customElement("ex-select")
@@ -126,11 +126,7 @@ export class ExSelect extends TailwindElement {
     document.removeEventListener("click", this.handleOutsideClick);
   };
 
-  selectOption = (
-    e: MouseEvent,
-    option: { label: string; value: string | number },
-  ) => {
-    e.stopPropagation();
+  selectOption = (option: { label: string; value: string | number }) => {
     if (this.value === option.value) return;
 
     this.value = option.value;
@@ -157,7 +153,7 @@ export class ExSelect extends TailwindElement {
             this.value === option.value &&
               "!bg-primary !text-primary-foreground",
           )}
-          @click="${(e: MouseEvent) => this.selectOption(e, option)}"
+          @click="${() => this.selectOption(option)}"
         >
           ${this.renderItem
             ? this.renderItem(option)
@@ -202,7 +198,7 @@ export class ExSelect extends TailwindElement {
         <div
           class=${cn(
             "ex-select-menu absolute z-10 w-full overflow-y-auto bg-background duration-150 ease-in-out border border-border",
-            this.open ? "opacity-100" : "opacity-60 !h-[0px]",
+            this.open ? "opacity-100" : "opacity-0 !h-[0px]",
             this.placement === "bottom"
               ? "origin-top rounded-b"
               : "origin-bottom rounded-t",

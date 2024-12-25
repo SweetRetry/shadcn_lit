@@ -1,40 +1,9 @@
-import { consume, createContext, provide } from "@lit/context";
+import { consume, provide } from "@lit/context";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import TailwindElement from "../tailwind-element";
-
-export interface RuleItem {
-  type?:
-    | "required"
-    | "max"
-    | "min"
-    | "len"
-    | "maxLen"
-    | "minLen"
-    | "email"
-    | "regexp";
-  value?: number;
-  message?: string; // 校验失败时的错误提示信息
-  validator?: (value?: string) => Promise<void>;
-}
-
-export type ValidateStatus = "error" | "warning" | "success" | "default";
-
-export interface FormContextProvide<
-  T extends Record<string, any> = Record<string, any>,
-> {
-  validate: (nameList?: string[]) => Promise<{
-    values?: T;
-    errors?: Record<string, any>;
-  }>;
-  setFieldValue: (name: keyof T, value: T[keyof T]) => Promise<void>;
-  getFieldValue: (field: keyof T) => T[keyof T] | undefined;
-  getFieldsValue: () => T | undefined;
-  setFormItem: (formItem: ExFormItem) => void;
-}
-export const formContext = createContext<FormContextProvide>(
-  Symbol("ex-form-context"),
-);
+import TailwindElement from "../../tailwind-element";
+import { formContext, FormContextProvide } from "./context";
+import { ValidateInfo, ValidateInfos, ValidateStatus } from "./types";
 
 @customElement("ex-form")
 export class ExForm<
@@ -79,7 +48,7 @@ export class ExForm<
           await validator(value);
           break;
         } catch (err) {
-          return (err as Error).message;
+          return err;
         }
       }
 
@@ -116,22 +85,10 @@ export class ExForm<
     }
   };
 
-  validate = async (
-    nameList?: Array<keyof T>,
-  ): Promise<{
-    values?: T;
-    errors?: Record<string, any>;
-  }> => {
-    if (!this.formState || !this.rules)
-      return { values: void 0, errors: void 0 };
+  validate = async (nameList?: Array<keyof T>): Promise<T | undefined> => {
+    if (!this.formState || !this.rules) return void 0;
 
-    const _validateInfos = {} as Record<
-      keyof T,
-      {
-        status: ValidateStatus;
-        message: string;
-      }
-    >;
+    const _validateInfos = {} as ValidateInfos<T>;
     const errors = {} as Record<keyof T, string>;
 
     const keys = nameList || Object.keys(this.rules);
@@ -153,9 +110,9 @@ export class ExForm<
 
     this.setFormItemValidateInfo();
     if (Object.keys(errors).length > 0) {
-      return { values: void 0, errors };
+      throw new Error(JSON.stringify(errors));
     }
-    return { values: this.formState, errors };
+    return this.formState;
   };
 
   @provide({ context: formContext })
@@ -230,7 +187,7 @@ export class ExFormItem extends TailwindElement {
   @property()
   status: ValidateStatus = "default";
 
-  setValidateInfo(info: { status: ValidateStatus; message?: string }) {
+  setValidateInfo(info: ValidateInfo) {
     this.status = info.status;
     this.message = info?.message;
   }

@@ -1,3 +1,4 @@
+import { message } from "@/components/ui/ex-message";
 import { I18nUtil } from "@/locales";
 import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
@@ -30,7 +31,9 @@ const reqInterceptor = (config: InternalAxiosRequestConfig<any>) => {
   const locale = I18nUtil.getLocale();
   if (locale) {
     config.headers["User-Lang"] = locale;
-
+  }
+  if (config.data?.requestId) {
+    config.headers["request-id"] = config.data.requestId;
   }
   return config;
 };
@@ -39,7 +42,15 @@ const resInterceptor = (res: AxiosResponse) => {
   const { config, data, headers, request } = res;
   const { message: msg, statusCode } = data;
   if (statusCode === 101) {
-    handleModuleChange(EX_MODULE_ENUM.Login);
+    return handleModuleChange(EX_MODULE_ENUM.Login);
+  }
+
+  if (config.method?.toLowerCase() !== "get") {
+    if (statusCode !== 200) {
+      message.show(msg, { type: "error" });
+    } else {
+      message.show(msg);
+    }
   }
 
   return { req: { config, headers, request }, ...data };
