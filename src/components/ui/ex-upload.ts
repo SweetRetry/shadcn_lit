@@ -30,7 +30,6 @@ export class ExUpload extends TailwindElement {
     this.fileList = this.fileList.filter(
       (file) => file.file.name !== fileToRemove.name,
     );
-    // this.dispatchEvent(new CustomEvent("remove", { detail: fileToRemove }));
   }
 
   // 触发文件选择
@@ -43,10 +42,7 @@ export class ExUpload extends TailwindElement {
       return html`<ul class="mt-4 space-y-3">
         ${this.fileList.map(
           ({ file, previewUrl, fileId }) => html`
-            <li
-              class="flex items-center justify-between"
-              key="${fileId}"
-            >
+            <li class="flex items-center justify-between" key="${fileId}">
               <div class="flex items-center space-x-3">
                 <img src="${previewUrl}" />
                 <label>${file.name}</label>
@@ -67,19 +63,12 @@ export class ExUpload extends TailwindElement {
     return html`
       <div>
         <!-- 自定义上传按钮 -->
-        <ex-button
-          @click="${this.handleClick}"
-          disabled=${false}
-        >
+        <ex-button @click="${this.handleClick}" disabled=${false}>
           上传 +
         </ex-button>
 
         <!-- 隐藏的文件输入框 -->
-        <input
-          type="file"
-          class="hidden"
-          @change="${this.handleFileChange}"
-        />
+        <input type="file" class="hidden" @change="${this.handleFileChange}" />
 
         ${this.renderFileList()}
       </div>

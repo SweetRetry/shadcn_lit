@@ -3,7 +3,7 @@ import { consume } from "@lit/context";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
-import { formContext, FormContextProvide } from "./ex-form/element";
+import { formContext, FormContextProvide } from "./ex-form/context";
 
 @customElement("ex-input")
 export class ExInput extends TailwindElement {
@@ -63,7 +63,7 @@ export class ExInput extends TailwindElement {
         placeholder=${this.placeholder}
         @input=${this.handleChange}
         class=${cn(
-          "ex-form-item-control-input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-none",
+          "ex-form-item-control-input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-none",
           {
             "pl-10": this.hasPrefix,
             "pr-10": this.hasSuffix,

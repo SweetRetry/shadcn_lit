@@ -76,10 +76,7 @@ export class ExModal extends TailwindElement {
           <header class="flex items-center justify-between px-4 py-3">
             <h2 class="text-lg font-bold">${this.title}</h2>
 
-            <ex-button
-              @click=${() => (this.open = false)}
-              variant="ghost"
-            >
+            <ex-button @click=${() => (this.open = false)} variant="ghost">
               <span class="text-lg">x</span>
             </ex-button>
           </header>
@@ -118,10 +115,7 @@ export class ExModal extends TailwindElement {
         <header class="mb-2 flex items-center justify-between">
           <h2 class="text-lg font-bold">${this.title}</h2>
 
-          <ex-button
-            @click=${() => (this.open = false)}
-            variant="ghost"
-          >
+          <ex-button @click=${() => (this.open = false)} variant="ghost">
             <span class="text-lg">x</span>
           </ex-button>
         </header>

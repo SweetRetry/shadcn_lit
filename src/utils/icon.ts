@@ -3,8 +3,8 @@ import { createElement, IconNode } from "lucide";
 export const createLucideIcon = (
   node: IconNode,
   { width, height }: { width?: number; height?: number } = {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
   },
 ) => {
   const icon = createElement(node);

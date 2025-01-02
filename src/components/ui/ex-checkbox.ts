@@ -20,7 +20,7 @@ export class ExCheckbox extends TailwindElement {
 
   render() {
     return html`
-      <label class="flex items-center text-sm">
+      <label class="flex cursor-pointer items-center text-sm">
         <input
           type="checkbox"
           class="h-4 w-4 accent-primary"

@@ -1,15 +1,16 @@
 import { getDepositConfig, getWalletNetwork } from "@/api/wallet";
+import "@/components/common/app-link";
 import TailwindElement from "@/components/tailwind-element";
-import "@/components/ui-extends/link";
 import "@/components/ui/ex-copyable";
-import "@/components/ui/ex-form/element";
+import "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-select";
 import { CoinController } from "@/controllers/coin-controller";
 import { EX_MODULE_ENUM } from "@/utils/module";
 import { translate as t } from "lit-i18n";
+import "./ex-deposit-record";
 
-import { ExForm } from "@/components/ui/ex-form/element";
+import { ExForm } from "@/components/ui/ex-form/ex-form";
 
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -39,7 +40,7 @@ export class ExDeposit extends TailwindElement {
   @state()
   canDepositCoinList: { label: string; value: string }[] = [];
 
-  async getConfig(net: string) {
+  async fetchConfig(net: string) {
     this.formState = {
       ...this.formState,
       net,
@@ -58,7 +59,7 @@ export class ExDeposit extends TailwindElement {
     }
   }
 
-  async getNetworks() {
+  async fetchNetworks() {
     const _formData = this.formRef?.value?.getFieldsValue();
 
     const _coin = _formData?.coin || "USDE";
@@ -73,7 +74,7 @@ export class ExDeposit extends TailwindElement {
           data.content.find((item) => item.network === this.formState.net)
             ?.network || data.content?.[0].network;
         if (_net) {
-          this.getConfig(_net);
+          this.fetchConfig(_net);
         }
       }
     }
@@ -85,33 +86,24 @@ export class ExDeposit extends TailwindElement {
     this.canDepositCoinList = this.coinController.coinList
       .filter((item) => item.canDeposit)
       .map((item) => ({ label: item.coinCode, value: item.coinCode }));
-    this.getNetworks();
+    this.fetchNetworks();
   }
 
   render() {
     return html` <section
       class="h-full rounded border border-border p-4 mobile:pt-0"
     >
-      <ex-link
-        .module=${EX_MODULE_ENUM.Wallet}
-        class="mb-4"
-      >
+      <app-link .module=${EX_MODULE_ENUM.Wallet} class="mb-4">
         ← ${t("ZbyFlQ82c4TkhC-Te0z0_")}
-      </ex-link>
+      </app-link>
 
-      <ex-form
-        .formState=${this.formState}
-        ${ref(this.formRef)}
-      >
-        <ex-form-item
-          label="${t("SFyzijuyLIdw6u62SJLxd")}"
-          name="coin"
-        >
+      <ex-form .formState=${this.formState} ${ref(this.formRef)}>
+        <ex-form-item label="${t("SFyzijuyLIdw6u62SJLxd")}" name="coin">
           <ex-select
             name="coin"
             .value=${this.formState.coin}
             .options=${this.canDepositCoinList}
-            @change=${this.getNetworks}
+            @change=${this.fetchNetworks}
             .labelRender=${(option: { label: string; value: string }) =>
               html` <div class="flex items-center space-x-2">
                 <img
@@ -123,10 +115,7 @@ export class ExDeposit extends TailwindElement {
           ></ex-select>
         </ex-form-item>
 
-        <ex-form-item
-          label="${t("-14eg2pKyLolrDkP-Zooi")}"
-          name="net"
-        >
+        <ex-form-item label="${t("-14eg2pKyLolrDkP-Zooi")}" name="net">
           <p slot="help">
             ${t("2UIPuozO_FWxLuMlJl8Az")}
             <span class="text-destructive">${this.formState.net} </span>
@@ -139,18 +128,14 @@ export class ExDeposit extends TailwindElement {
               label: item.name,
               value: item.network,
             }))}
-            @change=${(e: CustomEvent) => this.getConfig(e.detail.value)}
+            @change=${(e: CustomEvent) => this.fetchConfig(e.detail.value)}
           ></ex-select>
         </ex-form-item>
 
         ${this.config?.addr &&
         html` <ex-form-item>
             <div class="text-center">
-              <img
-                width="150"
-                class="mx-auto"
-                src=${this.config?.code}
-              />
+              <img width="150" class="mx-auto" src=${this.config?.code} />
               <p class="mt-2 text-sm text-gray-600">
                 ${t("XEuxY_V9UgZhpwkcbs7Cq")}
               </p>

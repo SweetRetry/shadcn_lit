@@ -3,6 +3,8 @@ import { translate as t } from "lit-i18n";
 
 export enum EX_MODULE_ENUM {
   Login = "ex-login",
+  Register = "ex-register",
+  ResetPwd = "ex-reset-pwd",
   Wallet = "ex-wallet",
   Deposit = "ex-deposit",
   Withdraw = "ex-withdraw",
@@ -12,6 +14,14 @@ export const EX_MODLUES = {
   [EX_MODULE_ENUM.Login]: {
     name: t("NlTvgznX0BryVIMKQOY7G"),
     module: () => import("@/elements/auth/ex-login"),
+  },
+  [EX_MODULE_ENUM.Register]: {
+    name: t("FDiOM6AezHrPUOgj33o9a"),
+    module: () => import("@/elements/auth/ex-register"),
+  },
+  [EX_MODULE_ENUM.ResetPwd]: {
+    name: t("NR6TsvjRUykEJKbsLwDrE"),
+    module: () => import("@/elements/auth/ex-reset-pwd"),
   },
   [EX_MODULE_ENUM.Wallet]: {
     name: t("ZbyFlQ82c4TkhC-Te0z0_"),
@@ -27,9 +37,8 @@ export const EX_MODLUES = {
   },
 };
 
-export const loadExModule = (moduleName: EX_MODULE_ENUM) => {
-  return EX_MODLUES[moduleName].module();
-};
+export const loadExModule = (moduleName: EX_MODULE_ENUM) =>
+  EX_MODLUES[moduleName].module();
 
 export const handleModuleChange = (moduleName: EX_MODULE_ENUM) => {
   const exApp = document.querySelector("ex-app") as ExApp;

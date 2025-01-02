@@ -8,22 +8,19 @@ import {
 } from "@floating-ui/dom";
 import "@lit-labs/virtualizer";
 import { consume } from "@lit/context";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
-import { formContext, FormContextProvide } from "./ex-form/element";
-import { ChevronDown, ChevronUp } from "./ex-icons";
+
+import { createLucideIcon } from "@/utils/icon";
+import { ChevronDown, ChevronUp } from "lucide";
+import { formContext, FormContextProvide } from "./ex-form/context";
+
+const ChevronDownIcon = createLucideIcon(ChevronDown);
+const ChevronUpIcon = createLucideIcon(ChevronUp);
 
 @customElement("ex-select")
 export class ExSelect extends TailwindElement {
-  static styles: CSSResult[] = [
-    ...TailwindElement.styles,
-    css`
-      .ex-select-menu {
-        transition-property: opacity, height;
-      }
-    `,
-  ];
   @property({ type: Array }) options: {
     label: string;
     value: string | number;
@@ -191,7 +188,7 @@ export class ExSelect extends TailwindElement {
           </span>
 
           <span class="text-[#808080]">
-            ${this.open ? ChevronUp : ChevronDown}
+            ${this.open ? ChevronUpIcon : ChevronDownIcon}
           </span>
         </div>
 
@@ -205,7 +202,8 @@ export class ExSelect extends TailwindElement {
           )}
           style="top: ${this.menuStyles.top};
            left: ${this.menuStyles.left};
-           height: ${this.menuStyles.height};"
+           height: ${this.menuStyles.height};
+           transition-property: height, opacity;"
         >
           ${this.renderSelectOptions()}
         </div>

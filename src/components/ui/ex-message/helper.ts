@@ -1,9 +1,8 @@
 import { TemplateResult } from "lit";
 import { v4 as uuidV4 } from "uuid";
-import { ExMessageBox } from "./element";
-import { MessageType } from "./types";
+import { ExMessageBox, MessageType } from "./ex-message";
 
-class ExMessage {
+class ExMessageHelper {
   messageIds: string[] = [];
 
   messageBox: ExMessageBox;
@@ -14,6 +13,11 @@ class ExMessage {
   };
 
   constructor() {
+    // 如果还未注册ex-message 和 ex-message-box，那么注册
+    if (!customElements.get("ex-message")) {
+      import("./ex-message");
+    }
+
     const messageBox = document.createElement("ex-message-box");
     document.body.appendChild(messageBox);
     this.messageBox = messageBox;
@@ -38,14 +42,14 @@ class ExMessage {
 
   info = (
     message: string | TemplateResult,
-    options: Omit<Parameters<typeof this.show>[1], "type">,
+    options?: Omit<Parameters<typeof this.show>[1], "type">,
   ) => {
     return this.show(message, { ...options, type: "info" });
   };
 
   error = (
     message: string | TemplateResult,
-    options: Omit<Parameters<typeof this.show>[1], "type">,
+    options?: Omit<Parameters<typeof this.show>[1], "type">,
   ) => {
     return this.show(message, { ...options, type: "error" });
   };
@@ -73,4 +77,4 @@ class ExMessage {
   }
 }
 
-export const exMessage = new ExMessage();
+export const message = new ExMessageHelper();

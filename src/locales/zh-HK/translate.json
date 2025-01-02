@@ -8,11 +8,15 @@
   "44Og7j1RHGjp5kCBmm386": "請確保您本次提現的收款平台支持您要提出的幣種和您提幣使用的網絡。 如果您還不能確定，建議您先和收幣平台確認後再提幣。",
   "7fuLfmK1W1MD9aGo8ZfWM": "選擇幣種",
   "7pWGqz-aGn5ygY1_lkQm6": "輸入地址",
+  "9pWhvPa9ZuGel4sLL8shr": "還未註冊？",
   "ArS2AzZCVnCvXrzxGHMu3": "密碼",
   "ChvwKWcUtSXzJ2mizkUuK": "賬戶名",
+  "FDiOM6AezHrPUOgj33o9a": "註冊",
+  "FQg_sRfHOfB_zIKXXU2Ae": "登錄您的賬戶",
   "IAm45vKTSJbBqHfSfcDm8": "充幣",
   "JK8TNck3PIZmO1xWzgd2L": "選擇網絡",
   "LulHZBEkbWF9nh5mTOSkw": "提幣",
+  "NR6TsvjRUykEJKbsLwDrE": "重置密碼",
   "NlTvgznX0BryVIMKQOY7G": "登錄",
   "NoCuxoBNwZX49EvPtwDpr": "手續費 {{0}}",
   "Q9TWGNX56cwOAyIbH4c7I": "請輸入賬戶名",
@@ -22,6 +26,7 @@
   "XEuxY_V9UgZhpwkcbs7Cq": "使用交易平台APP或錢包APP掃碼",
   "ZbyFlQ82c4TkhC-Te0z0_": "錢包",
   "dGM4mBG9if-u_Z-iuG6zV": "提幣金額",
+  "e4bvRe_uOA4OucRujrbuw": "忘記密碼？",
   "efWh8Lmsk4F7uYC76LiFg": "請輸入電子郵件",
   "fMBGcHZ74F6D_S3-bF3cP": "請輸入密碼",
   "gWdzqffu61uCKOqb3-VIM": "輸入提幣金額",
@@ -30,6 +35,7 @@
   "nTzlVuCOfSvg4CC4x7TmD": "Exworth 用戶",
   "tAkKt6TgvSxv07JogOP3r": "錢包餘額：",
   "vyAfAUot6ygBMGuT8qzRH": "輸入正整數",
-  "w2A6KG_nqADy3pjNsC9I8": "隱藏資產為 0 的幣種",
-  "wLwf2OXANiga0mKqyLe-0": "提幣地址"
+  "w2A6KG_nqADy3pjNsC9I8": "隐藏资产 = 0",
+  "wLwf2OXANiga0mKqyLe-0": "提幣地址",
+  "wl1Ykc8yBKy9VxMsaOsVd": "立即註冊！"
 }

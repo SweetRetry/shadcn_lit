@@ -1,5 +1,5 @@
+import "@/components/common/app-link";
 import TailwindElement from "@/components/tailwind-element";
-import "@/components/ui-extends/link";
 import "@/components/ui/ex-button";
 import "@/components/ui/ex-checkbox";
 import { ExCheckbox } from "@/components/ui/ex-checkbox";
@@ -11,6 +11,7 @@ import currency from "currency.js";
 import { html } from "lit";
 import { translate as t } from "lit-i18n";
 import { customElement, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 @customElement("ex-wallet")
 export class ExWallet extends TailwindElement {
@@ -46,13 +47,13 @@ export class ExWallet extends TailwindElement {
       </div>
 
       <div class="mt-4 space-x-3">
-        <ex-link .module=${EX_MODULE_ENUM.Deposit}>
+        <app-link .module=${EX_MODULE_ENUM.Deposit}>
           <ex-button> ${t("IAm45vKTSJbBqHfSfcDm8")} </ex-button>
-        </ex-link>
+        </app-link>
 
-        <ex-link .module=${EX_MODULE_ENUM.Withdraw}>
+        <app-link .module=${EX_MODULE_ENUM.Withdraw}>
           <ex-button> ${t("LulHZBEkbWF9nh5mTOSkw")} </ex-button>
-        </ex-link>
+        </app-link>
       </div>
     </section> `;
   }
@@ -77,23 +78,25 @@ export class ExWallet extends TailwindElement {
           </ex-checkbox>
         </div>
         <ul class="space-y-3">
-          ${assets.map(
+          ${repeat(
+            assets,
+            ([coinCode]) => coinCode,
             ([coinCode, value]) =>
               html`<li class="flex justify-between">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center">
                   <img
                     src="${CoinController.getCoinIcon(coinCode)}"
-                    class="h-8 w-8"
+                    class="mr-2 h-8 w-8"
                   />
                   <div class="space-y-2">
                     <p class="font-bold">${coinCode}</p>
-                    <p class="text-sm text-gray-400">
+                    <p class="text-sm text-gray-500">
                       ${this.coinController.coinMap?.get(coinCode)?.fullName}
                     </p>
                   </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-2 text-right">
                   <p>
                     ${cryptoPrecisionFormat(value.total_amount, {
                       precision:
@@ -101,7 +104,7 @@ export class ExWallet extends TailwindElement {
                     })}
                   </p>
 
-                  <p class="text-right text-sm text-gray-400">
+                  <p class="text-sm text-gray-500">
                     ≈${currencyFormat(value.total_convert)}
                   </p>
                 </div>

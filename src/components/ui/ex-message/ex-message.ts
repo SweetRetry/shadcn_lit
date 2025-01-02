@@ -4,12 +4,10 @@ import { cva } from "class-variance-authority";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { CircleCheck, CircleX, Info } from "lucide";
-import { MessageType } from "./types";
-import { exMessage } from "./util";
 
-const InfoIcon = createLucideIcon(Info);
-const CircleCheckIcon = createLucideIcon(CircleCheck);
-const CircleXIcon = createLucideIcon(CircleX);
+import { message as exMessage } from "./helper";
+
+export type MessageType = "info" | "success" | "error";
 
 @customElement("ex-message-box")
 export class ExMessageBox extends TailwindElement {
@@ -23,7 +21,7 @@ export class ExMessageBox extends TailwindElement {
 }
 
 const messageVariants = cva(
-  "pointer-events-auto w-fit inline-flex items-center  rounded border border-border bg-background  px-4 py-2 text-sm  shadow animate-in fade-in slide-in-from-top",
+  "pointer-events-auto w-fit inline-flex items-center rounded border border-border bg-background px-4 py-2 text-sm shadow animate-in fade-in slide-in-from-top",
   {
     variants: {
       type: {
@@ -44,7 +42,7 @@ export class ExMessage extends TailwindElement {
   id = "";
 
   @property()
-  duration = 1500;
+  duration = 3000;
 
   @property()
   message?: string | TemplateResult = "";
@@ -66,15 +64,11 @@ export class ExMessage extends TailwindElement {
   private renderIcon = () => {
     switch (this.type) {
       case "info":
-        return html`<span class="mr-2 text-primary"> ${InfoIcon} </span>`;
+        return createLucideIcon(Info);
       case "success":
-        return html`<span class="mr-2 text-primary">
-          ${CircleCheckIcon}
-        </span>`;
+        return createLucideIcon(CircleCheck);
       case "error":
-        return html`<span class="mr-2 text-destructive">
-          ${CircleXIcon}
-        </span>`;
+        return createLucideIcon(CircleX);
       default:
         return nothing;
     }
@@ -82,11 +76,17 @@ export class ExMessage extends TailwindElement {
 
   render() {
     return html`
-      <div class=${messageVariants({ type: this.type })}>
+      <div class=${messageVariants({ type: this.type })} id=${this.id}>
         ${this.renderIcon()}
-        <span> ${this.message} </span>
+        <span class="ml-2"> ${this.message} </span>
       </div>
     `;
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    "ex-message-box": ExMessageBox;
+    "ex-message": ExMessage;
+  }
+}

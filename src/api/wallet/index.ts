@@ -44,7 +44,7 @@ export const postWalletWithdraw = (
 
 export const getWalletRecord = (params: {
   coin?: string;
-  type: "DEPOSIT" | "WITHDRAW";
-  page: number;
-  size: number;
+  type: "Deposit" | "Withdraw";
+  pageID: number;
+  pageSize: number;
 }): Promise<ExResponse> => request.get("/wallet/record", { params });

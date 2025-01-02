@@ -1,4 +1,4 @@
-import { message } from "@/components/ui/ex-message";
+import { message } from "@/components/ui/ex-message/helper";
 import { I18nUtil } from "@/locales";
 import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
@@ -47,9 +47,8 @@ const resInterceptor = (res: AxiosResponse) => {
 
   if (config.method?.toLowerCase() !== "get") {
     if (statusCode !== 200) {
-      message.show(msg, { type: "error" });
-    } else {
-      message.show(msg);
+      console.log("resInterceptor -> msg", msg);
+      message.error(msg, { duration: 0 });
     }
   }
 

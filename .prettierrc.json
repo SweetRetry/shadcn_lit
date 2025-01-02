@@ -5,7 +5,6 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "printWidth": 80,
-  "singleAttributePerLine": true,
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "plugins": ["prettier-plugin-tailwindcss"],

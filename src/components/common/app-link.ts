@@ -1,12 +1,15 @@
 import "@/components/ui/ex-button";
+import { createLucideIcon } from "@/utils/icon";
 import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";
-import { cn } from "@/utils/style";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ArrowLeft } from "lucide";
 import TailwindElement from "../tailwind-element";
 
-@customElement("ex-link")
-export class ExLink extends TailwindElement {
+const ArrorLeftIcon = createLucideIcon(ArrowLeft, { width: 20, height: 20 });
+
+@customElement("app-link")
+export class ModuleLink extends TailwindElement {
   @property()
   class?: string;
   @property()
@@ -14,12 +17,18 @@ export class ExLink extends TailwindElement {
   render() {
     return html`<ex-button
       variant="link"
-      class=${cn(this.class,'text-base')}
       @click="${() => {
         this.module && handleModuleChange(this.module);
       }}"
     >
+      ${ArrorLeftIcon}
       <slot></slot>
     </ex-button>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "app-link": ModuleLink;
   }
 }

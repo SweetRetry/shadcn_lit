@@ -1,17 +1,12 @@
+import { ExResponse } from "@/api";
 import "@/components/ui/ex-button";
-import "@/components/ui/ex-form/element";
+import "@/components/ui/ex-form/ex-form";
+import { ExForm } from "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-modal";
-
 import { ExModal } from "@/components/ui/ex-modal";
-import { v4 as uuidv4 } from "uuid";
-
-import { ExResponse } from "@/api";
-import { ExForm } from "@/components/ui/ex-form/element";
-import { produce } from "immer";
 import { html } from "lit";
-import { translate as t } from "lit-i18n";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, Ref, ref } from "lit/directives/ref.js";
 import TailwindElement from "../tailwind-element";
 
@@ -54,35 +49,15 @@ export class ExVerifyModal extends TailwindElement {
   @property()
   callbacks?: VerifyCallbacks;
 
-  @state()
+  @property()
   verifyConfig = {
     ...initialVerifyConfig,
   };
 
-  @state()
-  verifyValues = { ...initialVerifyValues };
-
-  verifyModalId = uuidv4();
-
-  @query("#verify-form") verifyFormRef?: ExForm<VerifyValues>;
-
-  rules = {
-    securityPassword: [
-      {
-        type: "required",
-        message: t("3xEHseDPL3yyrQBFFRT9r"),
-      },
-    ],
-  };
+  verifyFormRef: Ref<ExForm<VerifyValues>> = createRef();
 
   @state()
   loading = false;
-
-  private setVerifyValues = (key: keyof VerifyValues, value: string) => {
-    this.verifyValues = produce(this.verifyValues, (draft) => {
-      draft[key] = value;
-    });
-  };
 
   veirfyModalRef?: Ref<ExModal> = createRef();
 
@@ -92,23 +67,18 @@ export class ExVerifyModal extends TailwindElement {
     this.veirfyModalRef?.value?.show();
   };
 
-  close = () => {
-    this.veirfyModalRef?.value?.close();
-  };
+  close = () => this.veirfyModalRef?.value?.close();
 
   protected afterClose = () => {
     this.verifyConfig = {
       ...initialVerifyConfig,
-    };
-    this.verifyValues = {
-      ...initialVerifyValues,
     };
   };
 
   protected handleVerify = async () => {
     if (!this.verifyFormRef) return;
 
-    const values = await this.verifyFormRef.validate();
+    const values = await this.verifyFormRef.value?.validate();
     if (!values) return;
 
     this.loading = true;
@@ -129,28 +99,12 @@ export class ExVerifyModal extends TailwindElement {
       <ex-modal
         title="安全驗證"
         ref=${ref(this.veirfyModalRef)}
-        id=${this.verifyModalId}
         @afterClose=${this.afterClose}
       >
-        <ex-form
-          id="verify-form"
-          .formState=${this.verifyValues}
-          @change=${(e: CustomEvent) =>
-            this.setVerifyValues(e.detail.key, e.detail.value)}
-          .rules=${this.rules}
-        >
-          <ex-form-item
-            name="securityPassword"
-            label="安全密码"
-          >
-            <ex-input
-              type="password"
-              .value=${this.verifyValues.securityPassword}
-              placeholder="請輸入安全密碼"
-              name="securityPassword"
-            ></ex-input>
-          </ex-form-item>
-        </ex-form>
+        <ex-verify-form
+          ${ref(this.verifyFormRef)}
+          .verifyConfig=${this.verifyConfig}
+        ></ex-verify-form>
 
         <ex-button
           class="mt-4 w-full"

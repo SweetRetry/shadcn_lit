@@ -1,5 +1,5 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
-
+import { debounce } from "lodash-es";
 interface ScreenSize {
   width: number;
   height: number;
@@ -21,14 +21,12 @@ export class ScreenController implements ReactiveController {
     this.host = host;
     this.host.addController(this);
 
-    this._updateScreenSize = this._updateScreenSize.bind(this);
-    this._updateOrientation = this._updateOrientation.bind(this);
+    this._debouncedUpdate = this._debouncedUpdate.bind(this);
   }
 
   // Called when the host is connected to the DOM
   hostConnected(): void {
-    window.addEventListener("resize", this._updateScreenSize);
-    window.addEventListener("resize", this._updateOrientation);
+    window.addEventListener("resize", this._debouncedUpdate);
 
     // Initialize screen size and orientation
     this._updateScreenSize();
@@ -37,8 +35,15 @@ export class ScreenController implements ReactiveController {
 
   // Called when the host is disconnected from the DOM
   hostDisconnected(): void {
-    window.removeEventListener("resize", this._updateScreenSize);
-    window.removeEventListener("resize", this._updateOrientation);
+    window.removeEventListener("resize", this._debouncedUpdate);
+  }
+
+  // Debounced resize handler
+  private _debouncedUpdate(): void {
+    debounce(() => {
+      this._updateScreenSize();
+      this._updateOrientation();
+    }, 200);
   }
 
   // Update screen size

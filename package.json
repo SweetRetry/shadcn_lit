@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "currency.js": "^2.0.4",
+    "dayjs": "^1.11.13",
     "i18next": "^24.0.2",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-localstorage-cache": "^1.1.1",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@types/big.js": "^6.2.2",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.9.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",

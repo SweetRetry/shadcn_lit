@@ -8,8 +8,10 @@
   "44Og7j1RHGjp5kCBmm386": "Please make sure that the payment  platform you are withdrawing this time supports the currency you want           to withdraw and the network you are using to withdraw. If you are           still unsure, it is recommended that you confirm with the receiving platform before withdrawing the coins.",
   "7fuLfmK1W1MD9aGo8ZfWM": "Select coin",
   "7pWGqz-aGn5ygY1_lkQm6": "Enter address",
+  "9pWhvPa9ZuGel4sLL8shr": "Not registered yet?",
   "ArS2AzZCVnCvXrzxGHMu3": "Password",
   "ChvwKWcUtSXzJ2mizkUuK": "Account",
+  "FQg_sRfHOfB_zIKXXU2Ae": "Log in to your account",
   "IAm45vKTSJbBqHfSfcDm8": "Deposit",
   "JK8TNck3PIZmO1xWzgd2L": "Select network",
   "LulHZBEkbWF9nh5mTOSkw": "Withdraw",
@@ -21,6 +23,7 @@
   "XEuxY_V9UgZhpwkcbs7Cq": "Use the trading platform APP or wallet APP to scan the code",
   "ZbyFlQ82c4TkhC-Te0z0_": "Wallet",
   "dGM4mBG9if-u_Z-iuG6zV": "Withdraw amount",
+  "e4bvRe_uOA4OucRujrbuw": "Forgot password?",
   "efWh8Lmsk4F7uYC76LiFg": "Please enter email",
   "fMBGcHZ74F6D_S3-bF3cP": "Please enter password",
   "gWdzqffu61uCKOqb3-VIM": "Enter the withdrawal amount",
@@ -29,6 +32,7 @@
   "nTzlVuCOfSvg4CC4x7TmD": "Exworth user",
   "tAkKt6TgvSxv07JogOP3r": "Wallet Balance:",
   "vyAfAUot6ygBMGuT8qzRH": "Enter a positive integer",
-  "w2A6KG_nqADy3pjNsC9I8": "Currency with hidden assets of 0",
-  "wLwf2OXANiga0mKqyLe-0": "Withdraw to"
+  "w2A6KG_nqADy3pjNsC9I8": "Hide assets = 0",
+  "wLwf2OXANiga0mKqyLe-0": "Withdraw to",
+  "wl1Ykc8yBKy9VxMsaOsVd": "Register now!"
 }

@@ -1,6 +1,7 @@
 import { consume, provide } from "@lit/context";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { pick } from "lodash-es";
 import TailwindElement from "../../tailwind-element";
 import { formContext, FormContextProvide } from "./context";
 import { ValidateInfo, ValidateInfos, ValidateStatus } from "./types";
@@ -54,7 +55,7 @@ export class ExForm<
 
       if (value === null || value === undefined || value?.trim() === "") {
         if (type === "required" && ruleValue !== false) return message;
-      } else if (!ruleValue) {
+      } else if (ruleValue) {
         switch (type) {
           case "max":
             if (Number(value) > ruleValue) return message;
@@ -85,16 +86,16 @@ export class ExForm<
     }
   };
 
-  validate = async (nameList?: Array<keyof T>): Promise<T | undefined> => {
+  validate = async (
+    nameList: Array<keyof T> = Object.keys(this.rules || {}),
+  ) => {
     if (!this.formState || !this.rules) return void 0;
 
     const _validateInfos = {} as ValidateInfos<T>;
     const errors = {} as Record<keyof T, string>;
 
-    const keys = nameList || Object.keys(this.rules);
-
     await Promise.all(
-      keys.map(async (key) => {
+      nameList.map(async (key) => {
         const message = await this.validateField(key);
 
         if (message) {
@@ -103,6 +104,7 @@ export class ExForm<
             status: "error",
             message,
           };
+        } else {
         }
       }),
     );
@@ -112,7 +114,8 @@ export class ExForm<
     if (Object.keys(errors).length > 0) {
       throw new Error(JSON.stringify(errors));
     }
-    return this.formState;
+
+    return pick(this.formState, nameList);
   };
 
   @provide({ context: formContext })
@@ -147,7 +150,10 @@ export class ExForm<
   }
 
   render() {
-    return html` <form @submit=${(e: SubmitEvent) => e.preventDefault()}>
+    return html` <form
+      @submit=${(e: SubmitEvent) => e.preventDefault()}
+      class="flex flex-col gap-4"
+    >
       <slot></slot>
     </form>`;
   }
@@ -163,11 +169,11 @@ export class ExFormItem extends TailwindElement {
     ...TailwindElement.styles,
     css`
       .ex-form-item-control ::slotted(ex-input) {
-        --ex-input-border-color: var(--border);
+        --ex-input-border-color: var(--ex-border);
       }
 
       .ex-form-item-control-error ::slotted(ex-input) {
-        --ex-input-border-color: var(--destructive);
+        --ex-input-border-color: var(--ex-destructive);
       }
     `,
   ];
@@ -205,11 +211,11 @@ export class ExFormItem extends TailwindElement {
 
   render() {
     return html` <div class="ex-form-item space-y-2">
-      <div class="text-sm">
+      <label class="text-sm font-medium">
         <slot name="label">
           ${this.label && html`<label> ${this.label} </label>`}
         </slot>
-      </div>
+      </label>
 
       <div class=${`ex-form-item-control ex-form-item-control-${this.status}`}>
         <slot></slot>
@@ -223,5 +229,12 @@ export class ExFormItem extends TailwindElement {
         </slot>
       </div>
     </div>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ex-form": ExForm;
+    "ex-form-item": ExFormItem;
   }
 }

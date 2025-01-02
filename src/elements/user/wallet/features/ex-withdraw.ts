@@ -1,9 +1,9 @@
 import { getWalletNetwork, postWalletWithdraw } from "@/api/wallet";
+import "@/components/common/app-link";
 import TailwindElement from "@/components/tailwind-element";
-import "@/components/ui-extends/link";
 import "@/components/ui/ex-button";
-import "@/components/ui/ex-form/element";
-import { ExForm } from "@/components/ui/ex-form/element";
+import "@/components/ui/ex-form/ex-form";
+import { ExForm } from "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-modal";
 import { ExModal } from "@/components/ui/ex-modal";
@@ -47,7 +47,6 @@ export class ExWithdraw extends TailwindElement {
   @state()
   formState = { ...ininitialState };
 
-  @state()
   rules = {
     coin: [
       {
@@ -129,11 +128,9 @@ export class ExWithdraw extends TailwindElement {
       draft[key] = value;
     });
   };
-  async getNetworks() {
+  async fetchNetworks() {
     const _formData = this.formRef.value?.getFieldsValue();
-
     const _coin = _formData?.coin || "USDE";
-
     const data = await getWalletNetwork({ coin: _coin });
     if (data.statusCode === 200) {
       this.networks = data.content;
@@ -143,8 +140,10 @@ export class ExWithdraw extends TailwindElement {
   async connectedCallback() {
     super.connectedCallback();
 
-    this.getNetworks();
-    await this.coinController.fetchCoinList();
+    await Promise.all([
+      this.fetchNetworks(),
+      this.coinController.fetchCoinList(),
+    ]);
 
     this.canWithdrawCoinList = this.coinController.coinList
       .filter((coin) => coin.withdraw.length > 0)
@@ -391,10 +390,7 @@ export class ExWithdraw extends TailwindElement {
             </p>
           </div>
 
-          <ex-button
-            @click=${this.handleSubmit}
-            size="lg"
-          >
+          <ex-button @click=${this.handleSubmit} size="lg">
             ${t("LulHZBEkbWF9nh5mTOSkw")}
           </ex-button>
         </div>
@@ -451,12 +447,9 @@ export class ExWithdraw extends TailwindElement {
           .loading=${this.coinController.isGettingCoinList ||
           this.walletController.isGettingWalletInfo}
         >
-          <ex-link
-            .module=${EX_MODULE_ENUM.Wallet}
-            class="mb-4"
-          >
+          <app-link .module=${EX_MODULE_ENUM.Wallet} class="mb-4">
             ← ${t("ZbyFlQ82c4TkhC-Te0z0_")}
-          </ex-link>
+          </app-link>
 
           <ex-form
             ${ref(this.formRef)}

@@ -4,8 +4,6 @@ import "@/components/ui/ex-dropdown";
 import "@/components/ui/ex-menu";
 import "@/components/ui/ex-spinner";
 import "@/providers/i18n-provider";
-import "@/providers/theme-provider";
-import "@/providers/user-provider";
 
 import { EX_MODULE_ENUM, loadExModule } from "@/utils/module";
 import { html, nothing, PropertyValues } from "lit";
@@ -99,7 +97,7 @@ export class ExApp extends TailwindElement {
   }
 
   protected firstUpdated(_changedProperties: PropertyValues): void {
-    if (this.theme === "dark") document.documentElement.classList.add("dark");
+    if (this.theme) document.documentElement.classList.add(this.theme);
   }
   private renderDynamicElement(tag: string | typeof nothing) {
     if (!tag || tag === nothing) return nothing;
@@ -114,56 +112,46 @@ export class ExApp extends TailwindElement {
         ?defaultLang=${this.config?.i18n?.defaultLang}
         ?resourceUrl=${this.config?.i18n?.resourceUrl}
       >
-        <user-provider ?config=${this.config?.user}>
-          <main class="ex-container relative flex h-full">
-            <header
-              class="fixed left-0 top-0 flex h-12 w-full items-center justify-between px-8 mobile:px-4"
-            >
-              <div></div>
-              <div class="space-x-4">
-                <ex-button
-                  size="icon"
-                  variant="ghost"
-                  @click=${() => {
-                    document.documentElement.classList.toggle("dark");
-                    this.theme = this.theme === "dark" ? "light" : "dark";
-                  }}
-                >
-                  ${this.theme === "light" ? MoonIcon : SunIcon}
+        <main class="ex-container relative flex h-full">
+          <header
+            class="fixed left-0 top-0 flex h-12 w-full items-center justify-between px-8 mobile:px-4"
+          >
+            <div></div>
+            <div class="space-x-4">
+              <ex-button
+                size="icon"
+                variant="ghost"
+                @click=${() => {
+                  document.documentElement.classList.toggle("dark");
+                  this.theme = this.theme === "dark" ? "light" : "dark";
+                }}
+              >
+                ${this.theme === "light" ? MoonIcon : SunIcon}
+              </ex-button>
+
+              <ex-dropdown placement="bottom-end">
+                <ex-button slot="trigger" size="icon" variant="ghost">
+                  ${GlobeIcon}
                 </ex-button>
 
-                <ex-dropdown placement="bottom-end">
-                  <ex-button
-                    slot="trigger"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    ${GlobeIcon}
-                  </ex-button>
+                <ex-menu>
+                  <ex-menu-item @click=${() => this.handleSetLocale("zh-HK")}>
+                    <ex-button variant="ghost"> 繁體中文 </ex-button>
+                  </ex-menu-item>
+                  <ex-menu-item @click=${() => this.handleSetLocale("en-US")}>
+                    <ex-button variant="ghost"> English </ex-button>
+                  </ex-menu-item>
+                </ex-menu>
+              </ex-dropdown>
+            </div>
+          </header>
 
-                  <ex-menu>
-                    <ex-menu-item @click=${() => this.handleSetLocale("zh-HK")}>
-                      <ex-button variant="ghost"> 繁體中文 </ex-button>
-                    </ex-menu-item>
-                    <ex-menu-item @click=${() => this.handleSetLocale("en-US")}>
-                      <ex-button variant="ghost"> English </ex-button>
-                    </ex-menu-item>
-                  </ex-menu>
-                </ex-dropdown>
-              </div>
-            </header>
-
-            <section
-              class="container h-full w-full space-x-4 py-12 mobile:pb-0"
-            >
-              <ex-spinner .loading=${this.loading}>
-                <section class="h-full rounded">
-                  ${this.renderDynamicElement(this.tag)}
-                </section>
-              </ex-spinner>
-            </section>
-          </main>
-        </user-provider>
+          <section class="container h-full w-full space-x-4 py-12 mobile:pb-0">
+            <ex-spinner .loading=${this.loading}>
+              ${this.renderDynamicElement(this.tag)}
+            </ex-spinner>
+          </section>
+        </main>
       </i18n-provider>
     `;
   }

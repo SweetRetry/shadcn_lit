@@ -1,5 +1,5 @@
 import { createContext } from "@lit/context";
-import { ExFormItem } from "./element";
+import { ExFormItem } from "./ex-form";
 
 export interface FormContextProvide<
   T extends Record<string, any> = Record<string, any>,
