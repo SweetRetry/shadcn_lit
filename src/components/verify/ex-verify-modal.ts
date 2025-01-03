@@ -9,13 +9,7 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, Ref, ref } from "lit/directives/ref.js";
 import TailwindElement from "../tailwind-element";
-
-export interface VerifyConfig {
-  security: 0 | 1;
-  mfa: 0 | 1;
-  email: 0 | 1;
-  requestId: string;
-}
+import { VerifyConfig, VerifyValues } from "./ex-verify-form";
 
 const initialVerifyConfig = {
   security: 0,
@@ -23,17 +17,9 @@ const initialVerifyConfig = {
   email: 0,
   requestId: "",
 };
-const initialVerifyValues = {
-  mfaCode: "",
-  mobileCode: "",
-  emailCaptcha: "",
-  securityPassword: "",
-};
-
-export type VerifyValues = typeof initialVerifyValues;
 
 export interface VerifyCallbacks {
-  submit?: (values: VerifyValues, requestId: string) => Promise<ExResponse>;
+  submit: (values: VerifyValues, requestId: string) => Promise<ExResponse>;
   success?: () => void;
   error?: () => void;
 }
@@ -77,10 +63,10 @@ export class ExVerifyModal extends TailwindElement {
 
   protected handleVerify = async () => {
     if (!this.verifyFormRef) return;
+    if (!this.callbacks?.submit) return;
 
     const values = await this.verifyFormRef.value?.validate();
     if (!values) return;
-
     this.loading = true;
 
     const res = await this.callbacks?.submit?.(
@@ -88,7 +74,9 @@ export class ExVerifyModal extends TailwindElement {
       this.verifyConfig.requestId,
     );
     if (res?.statusCode === 200) {
-      this.veirfyModalRef?.value?.close();
+      this.callbacks?.success?.();
+    } else {
+      this.callbacks?.error?.();
     }
 
     this.loading = false;

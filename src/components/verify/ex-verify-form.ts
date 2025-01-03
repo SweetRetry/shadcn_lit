@@ -4,6 +4,7 @@ import "@/components/ui/ex-form/ex-form";
 import { ExForm } from "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-modal";
+import { TimerController } from "@/controllers/timer-controller";
 import { produce } from "immer";
 import { html, nothing } from "lit";
 import { translate as t } from "lit-i18n";
@@ -44,6 +45,10 @@ export interface VerifyCallbacks {
 
 @customElement("ex-verify-form")
 export class ExVerifyForm extends TailwindElement {
+  captchaTimerController = new TimerController(this);
+
+  smsTimerController = new TimerController(this);
+
   @property()
   verifyInformation = {
     email: "",
@@ -56,6 +61,40 @@ export class ExVerifyForm extends TailwindElement {
   @property()
   verifyConfig = {
     ...initialVerifyConfig,
+  };
+
+  @property({ type: Function })
+  sendCaptcha?: () => Promise<ExResponse>;
+
+  @state()
+  captchaSending = false;
+
+  private _sendCaptcha = async () => {
+    if (!this.sendCaptcha) return;
+    if (this.captchaSending || this.captchaTimerController.isRunning) return;
+    this.captchaSending = true;
+    const { statusCode } = await this.sendCaptcha();
+    if (statusCode === 200) {
+      this.captchaTimerController.start();
+    }
+    this.captchaSending = false;
+  };
+
+  @property({ type: Function })
+  sendSms?: () => Promise<ExResponse>;
+
+  @state()
+  smsSending = false;
+
+  private _sendSms = async () => {
+    if (!this.sendSms) return;
+    if (this.smsSending || this.smsTimerController.isRunning) return;
+    this.smsSending = true;
+    const { statusCode } = await this.sendSms();
+    if (statusCode === 200) {
+      this.smsTimerController.start();
+    }
+    this.smsSending = false;
   };
 
   @state()
@@ -81,7 +120,6 @@ export class ExVerifyForm extends TailwindElement {
         {
           type: "required",
           value: !!this.verifyConfig.mfa,
-
           message: "請輸入MFA驗證碼",
         },
         {
@@ -173,7 +211,17 @@ export class ExVerifyForm extends TailwindElement {
                 .value=${this.verifyValues.emailCaptcha}
                 placeholder="請輸入郵箱驗證碼"
                 name="emailCaptcha"
-              ></ex-input>
+              >
+                <ex-button
+                  slot="suffix"
+                  variant="link"
+                  ?disabled=${this.captchaSending ||
+                  this.captchaTimerController.isRunning}
+                  @click=${() => this._sendCaptcha?.()}
+                >
+                  ${this.captchaTimerController.render("发送")}
+                </ex-button>
+              </ex-input>
             </ex-form-item>`
           : nothing}
         ${this.verifyConfig.sms
@@ -182,7 +230,18 @@ export class ExVerifyForm extends TailwindElement {
                 .value=${this.verifyValues.mobileCode}
                 placeholder="請輸入手機驗證碼"
                 name="mobileCode"
-              ></ex-input>
+                @click=${() => this._sendSms?.()}
+              >
+                <ex-button
+                  slot="suffix"
+                  variant="link"
+                  ?disabled=${this.smsSending ||
+                  this.smsTimerController.isRunning}
+                  @click=${() => this._sendCaptcha?.()}
+                >
+                  ${this.smsTimerController.render("发送")}
+                </ex-button>
+              </ex-input>
             </ex-form-item>`
           : nothing}
       </ex-form>

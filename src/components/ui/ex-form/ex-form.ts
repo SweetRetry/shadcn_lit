@@ -6,6 +6,13 @@ import TailwindElement from "../../tailwind-element";
 import { formContext, FormContextProvide } from "./context";
 import { ValidateInfo, ValidateInfos, ValidateStatus } from "./types";
 
+function isFalsyForRequired(value: unknown): boolean {
+  if (typeof value === "string") {
+    return value.trim() === ""; // 空字符串或仅包含空格
+  }
+  return value == null || value === false || value === 0 || value === ""; // 检查常见 falsy 值
+}
+
 @customElement("ex-form")
 export class ExForm<
   T extends Record<string, any> = Record<string, any>,
@@ -53,9 +60,9 @@ export class ExForm<
         }
       }
 
-      if (value === null || value === undefined || value?.trim() === "") {
+      if (isFalsyForRequired(value)) {
         if (type === "required" && ruleValue !== false) return message;
-      } else if (ruleValue) {
+      } else if (value && ruleValue) {
         switch (type) {
           case "max":
             if (Number(value) > ruleValue) return message;

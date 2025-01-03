@@ -20,10 +20,10 @@ export class ExCheckbox extends TailwindElement {
 
   render() {
     return html`
-      <label class="flex cursor-pointer items-center text-sm">
+      <label class="flex cursor-pointer text-sm">
         <input
           type="checkbox"
-          class="h-4 w-4 accent-primary"
+          class="h-5 w-5 accent-primary"
           ?checked=${this.checked}
           ?disabled=${this.disabled}
           @change=${this.onCheckedChange}

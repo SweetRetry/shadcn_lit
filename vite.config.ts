@@ -26,6 +26,11 @@ export default defineConfig(({ mode }) => {
       proxy: {
         "/api": {
           target: "http://card.exworth.local",
+          changeOrigin: true,
+        },
+        "/staticcdn": {
+          target: "http://pro.exworth.local",
+          changeOrigin: true,
         },
       },
     },

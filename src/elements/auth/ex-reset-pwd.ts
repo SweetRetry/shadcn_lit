@@ -4,14 +4,14 @@ import "@/components/ui/ex-input";
 import "@/components/ui/ex-upload";
 import "@/components/verify/ex-verify-form";
 
-import { postResetUserPwd } from "@/api/user";
+import { postResetUserPwd, postSendForgetPwdCaptcha } from "@/api/user";
 import TailwindElement from "@/components/tailwind-element";
 import { ExForm } from "@/components/ui/ex-form/ex-form";
 
 import { PostResetPwdParams } from "@/api/user/types";
-import { message } from "@/components/ui/ex-message/helper";
+import { AppLogo } from "@/components/common/app-logo";
 import { ExVerifyForm, VerifyConfig } from "@/components/verify/ex-verify-form";
-import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";
+import { EX_MODULE_ENUM } from "@/utils/module";
 import { produce } from "immer";
 import { html } from "lit";
 import { translate as t } from "lit-i18n";
@@ -80,6 +80,7 @@ export class ExResetPwd extends TailwindElement {
   verifyConfig = {};
 
   async handleSubmit() {
+    if (this.loading) return;
     switch (this.step) {
       case 1:
         const values = await this.formRef.value?.validate(["email"]);
@@ -115,8 +116,7 @@ export class ExResetPwd extends TailwindElement {
 
           const data = await postResetUserPwd(_values);
           if (data.statusCode === 200) {
-            handleModuleChange(EX_MODULE_ENUM.Login);
-            message.show("重置密码成功");
+            this.step = 4;
           }
         }
         break;
@@ -127,23 +127,50 @@ export class ExResetPwd extends TailwindElement {
   renderStepForm() {
     switch (this.step) {
       case 1:
-        return html` <ex-form-item
-          label="${t("ChvwKWcUtSXzJ2mizkUuK")}"
-          name="email"
-        >
-          <ex-input placeholder="${t("Q9TWGNX56cwOAyIbH4c7I")}" name="email">
-          </ex-input>
-        </ex-form-item>`;
+        return html`
+          <h2 class="text-2xl font-semibold">Forgot password</h2>
+          <p class="text-gray-500">
+            Enter your email address to reset your password.
+          </p>
+          <ex-form-item label="${t("ChvwKWcUtSXzJ2mizkUuK")}" name="email">
+            <ex-input placeholder="${t("Q9TWGNX56cwOAyIbH4c7I")}" name="email">
+            </ex-input>
+          </ex-form-item>
+
+          <ex-button
+            @click=${this.handleSubmit}
+            class="w-full"
+            .loading=${this.loading}
+          >
+            确认
+          </ex-button>
+        `;
       case 2:
         return html`
+          <h2 class="text-2xl font-semibold">Verify your account</h2>
+          <p class="text-gray-500">Please enter the verification code.</p>
           <ex-verify-form
             ${ref(this.verifyRef)}
             .verifyConfig=${this.verifyConfig}
+            .verifyInformation=${{ email: this.formState.email }}
+            .sendCaptcha=${() => postSendForgetPwdCaptcha()}
           >
           </ex-verify-form>
+          <ex-button
+            @click=${this.handleSubmit}
+            class="w-full"
+            .loading=${this.loading}
+          >
+            验证
+          </ex-button>
         `;
       case 3:
-        return html` <ex-form-item name="password" label="密碼">
+        return html`
+          <h2 class="text-2xl font-semibold">Set yout new password</h2>
+          <p class="text-gray-500">
+            Your new password must be different from the previous one.
+          </p>
+          <ex-form-item name="password" label="密碼">
             <ex-input
               placeholder="${t("fMBGcHZ74F6D_S3-bF3cP")}"
               type="password"
@@ -159,40 +186,66 @@ export class ExResetPwd extends TailwindElement {
               name="confirm"
             >
             </ex-input>
-          </ex-form-item>`;
+          </ex-form-item>
+
+          <ex-button
+            @click=${this.handleSubmit}
+            class="w-full"
+            .loading=${this.loading}
+          >
+            重置
+          </ex-button>
+        `;
     }
   }
 
+  renderResult() {
+    return html`
+      <div class="space-y-4">
+        <h2 class="text-2xl font-semibold">Password Reset!</h2>
+        <p class="text-gray-500">
+          Your password has been reset successfully. You can click continue to
+          login.
+        </p>
+
+        <app-link .module=${EX_MODULE_ENUM.Login}>
+          <ex-button>登录</ex-button>
+        </app-link>
+      </div>
+    `;
+  }
   render() {
     return html`
       <div class="flex h-full items-center">
-        <div class="mx-auto w-full max-w-sm p-4">
-          <div class="mb-4">
+        <div class="mx-auto w-full max-w-md">
+          <div class="rounded-lg border border-border p-8">
+            ${this.step === 4
+              ? this.renderResult()
+              : html`
+                  <div class="mb-6 w-40">${AppLogo}</div>
+
+                  <ex-form
+                    ${ref(this.formRef)}
+                    @change=${(e: CustomEvent) =>
+                      this.setFormState(e.detail.key, e.detail.value)}
+                    .formState=${this.formState}
+                    .rules=${this.rules}
+                  >
+                    ${this.renderStepForm()}
+                  </ex-form>
+                `}
+          </div>
+          <div class="mt-4 text-center text-sm text-gray-500">
+            <app-link .module=${EX_MODULE_ENUM.Register}>
+              <h2 class="text-center text-primary">註冊</h2>
+            </app-link>
+
+            <span>或</span>
+
             <app-link .module=${EX_MODULE_ENUM.Login}>
-              <h2 class="text-center text-lg font-semibold">
-                ${t("FQg_sRfHOfB_zIKXXU2Ae")}
-              </h2>
+              <h2 class="text-center text-primary">登录</h2>
             </app-link>
           </div>
-
-          <ex-form
-            ${ref(this.formRef)}
-            @change=${(e: CustomEvent) =>
-              this.setFormState(e.detail.key, e.detail.value)}
-            .formState=${this.formState}
-            .rules=${this.rules}
-          >
-       
-            ${this.renderStepForm()}
-
-            <ex-button
-              @click=${this.handleSubmit}
-              class="w-full"
-              .loading=${this.loading}
-            >
-              重置
-            </ex-button>
-          </ex-form>
         </div>
       </div>
     `;

@@ -8,3 +8,11 @@ export interface PostResetPwdParams {
   password: string;
   confirm: string;
 }
+
+export interface PostUserRegisterParams {
+  email: string;
+  password: string;
+  confirm: string;
+  submit: boolean;
+
+}
