@@ -16,9 +16,6 @@ import { createLucideIcon } from "@/utils/icon";
 import { ChevronDown, ChevronUp } from "lucide";
 import { formContext, FormContextProvide } from "./ex-form/context";
 
-const ChevronDownIcon = createLucideIcon(ChevronDown);
-const ChevronUpIcon = createLucideIcon(ChevronUp);
-
 @customElement("ex-select")
 export class ExSelect extends TailwindElement {
   @property({ type: Array }) options: {
@@ -26,10 +23,13 @@ export class ExSelect extends TailwindElement {
     value: string | number;
   }[] = []; // 选项数组
 
-  @property()
-  value?: string | number; // 当前选中的值
-
   @property({ type: Boolean })
+  autoFillAllOption = false;
+
+  @property()
+  value?: string | number = ""; // 当前选中的值
+
+  @state()
   open: boolean = false; // 下拉框是否打开
 
   @property()
@@ -69,7 +69,6 @@ export class ExSelect extends TailwindElement {
   @query(".ex-select-menu") menu!: HTMLElement;
 
   // 切换下拉框的开关状态
-
   private async updateMenuPosition() {
     if (!this.trigger || !this.menu) return;
 
@@ -107,7 +106,7 @@ export class ExSelect extends TailwindElement {
     }
     this.menuStyles = {
       ...this.menuStyles,
-      height: `${this.open ? Math.min(this.options.length, 8) * 40 : 0}px`,
+      height: `${this.open ? (Math.min(this.options.length, 6) + (this.autoFillAllOption ? 1 : 0)) * 40 : 0}px`,
     };
   };
 
@@ -141,35 +140,36 @@ export class ExSelect extends TailwindElement {
     );
   };
 
-  renderSelectOptions = () => {
-    const _renderItem = (option: { label: string; value: string }) => {
-      return html`
-        <li
-          class=${cn(
-            "px-3 py-2 hover:bg-secondary cursor-pointer hover:text-secondary-foreground w-full list-none select-none text-sm h-[40px] flex items-center",
-            this.value === option.value &&
-              "!bg-primary !text-primary-foreground",
-          )}
-          @click="${() => this.selectOption(option)}"
-        >
-          ${this.renderItem
-            ? this.renderItem(option)
-            : this.labelRender
-              ? this.labelRender(option)
-              : option.label}
-        </li>
-      `;
-    };
-
-    return html` <lit-virtualizer
-      .items=${this.options}
-      .renderItem=${_renderItem}
-    >
-    </lit-virtualizer>`;
+  _renderItem = (option: { label: string; value: string }) => {
+    return html`
+      <li
+        class=${cn(
+          "px-3 py-2 hover:bg-secondary cursor-pointer hover:text-secondary-foreground w-full list-none select-none text-sm h-[40px] flex items-center",
+          this.value === option.value && "!bg-primary !text-primary-foreground",
+        )}
+        @click="${() => this.selectOption(option)}"
+      >
+        ${this.renderItem
+          ? this.renderItem(option)
+          : this.labelRender
+            ? this.labelRender(option)
+            : option.label}
+      </li>
+    `;
   };
 
   render() {
-    const selectedOption = this.options.find(
+    const options = this.autoFillAllOption
+      ? [
+          {
+            label: "All",
+            value: "",
+          },
+          ...this.options,
+        ]
+      : this.options;
+
+    const selectedOption = options.find(
       (option) => option.value === this.value,
     );
 
@@ -184,28 +184,29 @@ export class ExSelect extends TailwindElement {
               ? this.labelRender
                 ? this.labelRender(selectedOption)
                 : selectedOption?.label
-              : html`<span class="text-placehoder">${this.placeholder}</span>`}
+              : html`<span class="text-[#808080]">${this.placeholder}</span>`}
           </span>
 
           <span class="text-[#808080]">
-            ${this.open ? ChevronUpIcon : ChevronDownIcon}
+            ${this.open
+              ? createLucideIcon(ChevronUp)
+              : createLucideIcon(ChevronDown)}
           </span>
         </div>
 
         <div
           class=${cn(
-            "ex-select-menu absolute z-10 w-full overflow-y-auto bg-background duration-150 ease-in-out border border-border",
+            "ex-select-menu absolute z-10 w-full overflow-y-auto bg-background duration-150 ease-in-out border border-border rounder",
             this.open ? "opacity-100" : "opacity-0 !h-[0px]",
-            this.placement === "bottom"
-              ? "origin-top rounded-b"
-              : "origin-bottom rounded-t",
+            this.placement === "bottom" ? "origin-top " : "origin-bottom ",
           )}
           style="top: ${this.menuStyles.top};
            left: ${this.menuStyles.left};
            height: ${this.menuStyles.height};
            transition-property: height, opacity;"
         >
-          ${this.renderSelectOptions()}
+          <lit-virtualizer .items=${options} .renderItem=${this._renderItem}>
+          </lit-virtualizer>
         </div>
       </div>
     `;

@@ -218,7 +218,7 @@ export class ExResetPwd extends TailwindElement {
     return html`
       <div class="flex h-full items-center">
         <div class="mx-auto w-full max-w-md">
-          <div class="rounded-lg border border-border p-8">
+          <div class="rounded-lg border border-border p-8 mobile:border-none">
             ${this.step === 4
               ? this.renderResult()
               : html`
@@ -235,15 +235,15 @@ export class ExResetPwd extends TailwindElement {
                   </ex-form>
                 `}
           </div>
-          <div class="mt-4 text-center text-sm text-gray-500">
+          <div class="text-center text-sm text-gray-500 mt-2">
             <app-link .module=${EX_MODULE_ENUM.Register}>
-              <h2 class="text-center text-primary">註冊</h2>
+              <p class="text-center text-primary">註冊</p>
             </app-link>
 
             <span>或</span>
 
             <app-link .module=${EX_MODULE_ENUM.Login}>
-              <h2 class="text-center text-primary">登录</h2>
+              <p class="text-center text-primary">登录</p>
             </app-link>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 // @ts-ignore
+import { AppI18nNextKey } from "@/config/storageKey";
 import Cache from "i18next-localstorage-cache";
 import { initLitI18n } from "lit-i18n";
 import enUS from "./en-US/translate.json";
@@ -35,7 +36,7 @@ export class I18nUtil {
   }
   static getLocale() {
     return (
-      i18next.language || localStorage.getItem("i18nextLng") || defaultLang
+      i18next.language || localStorage.getItem(AppI18nNextKey) || defaultLang
     );
   }
   static async setLocale(locale: string, resourcePath?: string) {

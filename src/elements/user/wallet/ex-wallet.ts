@@ -3,6 +3,7 @@ import TailwindElement from "@/components/tailwind-element";
 import "@/components/ui/ex-button";
 import "@/components/ui/ex-checkbox";
 import { ExCheckbox } from "@/components/ui/ex-checkbox";
+import { AppWalletShowZeroBalanceKey } from "@/config/storageKey";
 import { CoinController } from "@/controllers/coin-controller";
 import { WalletController, WalletInfo } from "@/controllers/wallet-controller";
 import { cryptoPrecisionFormat, currencyFormat } from "@/utils/format";
@@ -20,8 +21,8 @@ export class ExWallet extends TailwindElement {
 
   @state()
   private _hiddenZeroBalance = JSON.parse(
-    localStorage.getItem("hiddenZeroBalance") || "false",
-  );
+    localStorage.getItem(AppWalletShowZeroBalanceKey) || "false",
+  ) as boolean;
 
   // Getter
   get hiddenZeroBalance() {
@@ -30,34 +31,43 @@ export class ExWallet extends TailwindElement {
 
   // Setter
   set hiddenZeroBalance(value: boolean) {
-    const oldValue = this._hiddenZeroBalance;
     this._hiddenZeroBalance = value;
-    this.requestUpdate("hiddenZeroBalance", oldValue);
     // 同步到 localStorage
-    localStorage.setItem("hiddenZeroBalance", JSON.stringify(value));
+    localStorage.setItem(AppWalletShowZeroBalanceKey, JSON.stringify(value));
   }
 
-  renderHeader(wallet?: WalletInfo) {
-    return html`<section>
+  get loading() {
+    return (
+      this.walletController.isGettingWalletInfo ||
+      this.coinController.isGettingCoinList
+    );
+  }
+
+  private renderHeader(wallet?: WalletInfo) {
+    return html`<section class="flex justify-between">
       <div class="space-y-2">
-        <p class="font-bold">${t("tAkKt6TgvSxv07JogOP3r")}</p>
-        <p class="text-2xl font-bold">
-          ${currency(wallet?.balance || 0).format({ precision: 2 })}
+        <p class="text-xl font-semibold">${t("tAkKt6TgvSxv07JogOP3r")}</p>
+        <p class="text-2xl font-semibold">
+          ≈ ${currency(wallet?.balance || 0).format({ precision: 2 })}
         </p>
       </div>
 
-      <div class="mt-4 space-x-3">
+      <div class="space-x-3">
         <app-link .module=${EX_MODULE_ENUM.Deposit}>
-          <ex-button> ${t("IAm45vKTSJbBqHfSfcDm8")} </ex-button>
+          <ex-button size="sm" variant="secondary">
+            ${t("IAm45vKTSJbBqHfSfcDm8")}
+          </ex-button>
         </app-link>
 
         <app-link .module=${EX_MODULE_ENUM.Withdraw}>
-          <ex-button> ${t("LulHZBEkbWF9nh5mTOSkw")} </ex-button>
+          <ex-button size="sm" variant="secondary">
+            ${t("LulHZBEkbWF9nh5mTOSkw")}
+          </ex-button>
         </app-link>
       </div>
     </section> `;
   }
-  renderCryptos(wallet?: WalletInfo) {
+  private renderCryptos(wallet?: WalletInfo) {
     if (wallet?.assets) {
       let assets = Object.entries(wallet?.assets);
 
@@ -67,7 +77,8 @@ export class ExWallet extends TailwindElement {
         ));
 
       return html` <section>
-        <div class="mb-4 flex items-center justify-end space-x-2">
+        <div class="mb-4 flex items-center justify-between space-x-2">
+          <h2 class="text-xl font-semibold">Assets</h2>
           <ex-checkbox
             .checked=${this.hiddenZeroBalance}
             @change=${(e: Event) => {
@@ -82,8 +93,8 @@ export class ExWallet extends TailwindElement {
             assets,
             ([coinCode]) => coinCode,
             ([coinCode, value]) =>
-              html`<li class="flex justify-between">
-                <div class="flex items-center">
+              html`<li class="flex items-center justify-between">
+                <div class="flex">
                   <img
                     src="${CoinController.getCoinIcon(coinCode)}"
                     class="mr-2 h-8 w-8"
@@ -114,15 +125,14 @@ export class ExWallet extends TailwindElement {
       </section>`;
     }
   }
+
   render() {
     const wallet = this.walletController.wallet;
-    return html` <section class="h-full rounded border border-border p-4">
-      <ex-spinner
-        .loading=${this.walletController.isGettingWalletInfo ||
-        this.coinController.isGettingCoinList}
-      >
+
+    return html` <section class="h-full rounded">
+      <ex-spinner .loading=${this.loading}>
         ${this.renderHeader(wallet)}
-        <p class="my-6 h-[1px] w-full bg-gray-200"></p>
+        <p class="my-4 h-[1px] w-full bg-gray-200"></p>
         ${this.renderCryptos(wallet)}
       </ex-spinner>
     </section>`;

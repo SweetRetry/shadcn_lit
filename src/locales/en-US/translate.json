@@ -28,10 +28,21 @@
   "efWh8Lmsk4F7uYC76LiFg": "Please enter email",
   "fMBGcHZ74F6D_S3-bF3cP": "Please enter password",
   "gWdzqffu61uCKOqb3-VIM": "Enter the withdrawal amount",
+  "history": {
+    "withdraw": {
+      "status": {
+        "cancel": "Cancelled",
+        "failure": "Failed",
+        "processing": "Processing",
+        "success": "Succeed",
+        "waiting": "Under Review"
+      }
+    }
+  },
   "lGsrMtXGUODjwRq0S6SBt": "Please enter password",
   "m233lVVFcr4QDwfq2ycFP": "Tips: Not all exchanges accept USDE deposits, please check before withdrawing USDE.",
   "nTzlVuCOfSvg4CC4x7TmD": "Exworth user",
-  "tAkKt6TgvSxv07JogOP3r": "Wallet Balance:",
+  "tAkKt6TgvSxv07JogOP3r": "Wallet Balance",
   "vyAfAUot6ygBMGuT8qzRH": "Enter a positive integer",
   "w2A6KG_nqADy3pjNsC9I8": "Hide assets = 0",
   "wLwf2OXANiga0mKqyLe-0": "Withdraw to",

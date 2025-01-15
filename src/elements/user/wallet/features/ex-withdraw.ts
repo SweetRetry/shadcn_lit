@@ -10,21 +10,25 @@ import { ExModal } from "@/components/ui/ex-modal";
 import "@/components/ui/ex-select";
 import "@/components/ui/ex-spinner";
 import "@/components/verify/ex-verify-modal";
+import { ExVerifyModal } from "@/components/verify/ex-verify-modal";
+import "@/elements/user/wallet/features/records/ex-withdraw-history";
 import { Big } from "big.js";
 import { produce } from "immer";
-import { ExVerifyModal } from "./../../../../components/verify/ex-verify-modal";
 
 import { CoinController } from "@/controllers/coin-controller";
 import { WalletController } from "@/controllers/wallet-controller";
 import { cryptoPrecisionFormat } from "@/utils/format";
 
-import { VerifyConfig } from "@/components/verify/ex-verify-modal";
+import { WalletNetwork } from "@/api/wallet/types";
+import { VerifyConfig } from "@/components/verify/ex-verify-form";
+import { createLucideIcon } from "@/utils/icon";
 import { EX_MODULE_ENUM } from "@/utils/module";
 import { cn } from "@/utils/style";
 import { html, nothing } from "lit";
 import { translate as t } from "lit-i18n";
 import { customElement, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { ArrowRight } from "lucide";
 
 const ininitialState = {
   coin: "USDE",
@@ -170,7 +174,7 @@ export class ExWithdraw extends TailwindElement {
 
   protected renderSelectCoinStep = () => {
     return html` <div class="space-y-2">
-      <h3 class="mb-2 font-bold">${t("7fuLfmK1W1MD9aGo8ZfWM")}</h3>
+      <h3 class="mb-2 font-semibold">${t("7fuLfmK1W1MD9aGo8ZfWM")}</h3>
       <ex-form-item name="coin">
         ${this.formState.coin === "USDE" &&
         html`<p slot="help">${t("m233lVVFcr4QDwfq2ycFP")}</p>`}
@@ -204,7 +208,7 @@ export class ExWithdraw extends TailwindElement {
     const { type, addr, target } = this.formState;
     const isOuter = type === "OUTER";
     return html` <div>
-      <h3 class="font-bold">${t("wLwf2OXANiga0mKqyLe-0")}</h3>
+      <h3 class="font-semibold">${t("wLwf2OXANiga0mKqyLe-0")}</h3>
       <div class="space-x-2">
         <ex-button
           variant="link"
@@ -341,9 +345,9 @@ export class ExWithdraw extends TailwindElement {
   }
 
   protected renderWithdrawAmount = () => {
-    const { coin, net, addr, type, target, amount } = this.formState;
+    const { coin, type, amount, addr, net, target } = this.formState;
 
-    const precision = this.coinController.getCoinPrecision(coin);
+    const precision = CoinController.getCoinPrecision(coin);
     const availabelAmount = this.walletController.getCoinAvailableAmount(coin);
 
     const selectedNetwork = this.networks.find(
@@ -352,6 +356,8 @@ export class ExWithdraw extends TailwindElement {
 
     const isOuter = type === "OUTER";
 
+    const canEnterWithdrawAmount =
+      (isOuter && addr && net) || (!isOuter && target);
     const renderResult = () => {
       return html`
         <div class="mb-2 flex justify-between text-sm">
@@ -390,28 +396,33 @@ export class ExWithdraw extends TailwindElement {
             </p>
           </div>
 
-          <ex-button @click=${this.handleSubmit} size="lg">
+          <ex-button
+            @click=${() => {
+              if (canEnterWithdrawAmount && amount) {
+                this.handleSubmit();
+              }
+            }}
+            .disabled=${!(canEnterWithdrawAmount && amount)}
+            size="lg"
+          >
             ${t("LulHZBEkbWF9nh5mTOSkw")}
           </ex-button>
         </div>
       `;
     };
 
-    const isShow = (isOuter && net && addr) || (!isOuter && target);
-
-    if (!isShow) return nothing;
-
     return html`
-      <div>
-        <h3 class="font-bold">${t("dGM4mBG9if-u_Z-iuG6zV")}</h3>
+      <div class="relative">
+        <h3 class="font-semibold">${t("dGM4mBG9if-u_Z-iuG6zV")}</h3>
 
         <ex-form-item name="amount">
           <ex-input
             .placeholder=${isOuter
-              ? `${selectedNetwork?.withdrawMin} - ${selectedNetwork?.withdrawMax}`
+              ? `${selectedNetwork?.withdrawMin || 0} - ${selectedNetwork?.withdrawMax || 0}`
               : t("gWdzqffu61uCKOqb3-VIM")}
             name="amount"
             .value=${amount}
+            ?disabled=${!canEnterWithdrawAmount}
           >
             <div slot="suffix">
               ${coin}
@@ -440,29 +451,53 @@ export class ExWithdraw extends TailwindElement {
       </div>
     `;
   };
+
+  get loading() {
+    return (
+      this.coinController.isGettingCoinList ||
+      this.walletController.isGettingWalletInfo
+    );
+  }
   render() {
     return html`
-      <section class="h-full rounded border border-border p-4 mobile:pt-0">
-        <ex-spinner
-          .loading=${this.coinController.isGettingCoinList ||
-          this.walletController.isGettingWalletInfo}
-        >
-          <app-link .module=${EX_MODULE_ENUM.Wallet} class="mb-4">
-            ← ${t("ZbyFlQ82c4TkhC-Te0z0_")}
-          </app-link>
+      <section class="h-full">
+        <h3 class="mb-2 text-2xl font-semibold">Withdraw</h3>
 
+        <ex-spinner .loading=${this.loading}>
           <ex-form
             ${ref(this.formRef)}
             .formState=${this.formState}
             @change=${(e: CustomEvent) =>
               this.setFormState(e.detail.key, e.detail.value)}
             .rules=${this.rules}
-            class="space-y-4"
+            class="space-y-3"
           >
             ${this.renderSelectCoinStep()} ${this.renderWithdrawTargetStep()}
             ${this.renderWithdrawAmount()}
           </ex-form>
         </ex-spinner>
+
+        <div class="mt-4">
+          <div class="flex justify-between">
+            <h3 class="text-2xl font-semibold">Recent Withdrawals</h3>
+            <app-link
+              .module=${EX_MODULE_ENUM.Hisotry}
+              .props=${{ type: "withdraw" }}
+            >
+              <span class="mr-2"> More </span>
+              ${createLucideIcon(ArrowRight, {
+                width: 12,
+                height: 12,
+              })}
+            </app-link>
+          </div>
+          ${this.loading
+            ? html` <ex-spinner loading=${this.loading}></ex-spinner> `
+            : html` <ex-withdraw-history
+                mode="recent"
+                .pageSize=${5}
+              ></ex-withdraw-history>`}
+        </div>
       </section>
 
       ${this.renderNetworkModal()}

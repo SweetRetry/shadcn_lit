@@ -5,8 +5,8 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -21,9 +21,9 @@ const buttonVariants = cva(
         link: "hover:text-primary !px-0 ",
       },
       size: {
-        default: "h-10 px-4 py-1 rounded",
-        sm: "h-8 rounded px-2",
-        lg: "h-11 rounded px-6",
+        default: "h-9 px-4 py-1",
+        sm: "h-8 px-2",
+        lg: "h-11 px-6",
         icon: "h-6 w-6",
       },
     },
@@ -70,14 +70,17 @@ export class ExButton extends TailwindElement {
             size: this.size,
           }),
           this.class,
+          this.disabled && "!cursor-not-allowed",
         )}
         ?disabled=${this.disabled || this.loading}
       >
         <slot></slot>
         ${this.loading
-          ? html`<div
-              class="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-solid border-primary-foreground border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            ></div>`
+          ? html`
+              <div
+                class="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-solid border-primary-foreground border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+              ></div>
+            `
           : nothing}
       </button>
     `;

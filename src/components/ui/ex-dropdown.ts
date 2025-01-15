@@ -12,15 +12,20 @@ import TailwindElement from "../tailwind-element";
 
 @customElement("ex-dropdown")
 export class ExDropdownMenu extends TailwindElement {
-  @property({ type: Boolean }) open = false; // 控制菜單顯示/隱藏
-  @property({ type: String }) placement = "bottom"; // 初始放置位置
-  @state() private menuStyles = { top: "-9999px", left: "-9999px" }; // 動態位置樣式
+  @property({ type: Boolean })
+  open = false; // 控制菜單顯示/隱藏
+  
+  @property({ type: String })
+  placement = "bottom"; // 初始放置位置
 
-  // TODO:可悬浮打开
-  // @property({ type: Boolean }) hoverable = false;
+  @state()
+  menuStyles = { top: "-9999px", left: "-9999px" }; // 動態位置樣式
 
-  @query(".ex-trigger") trigger!: HTMLElement;
-  @query(".ex-menu") menu!: HTMLElement;
+  @query(".ex-trigger")
+  trigger!: HTMLElement;
+
+  @query(".ex-menu")
+  menu!: HTMLElement;
 
   static styles = [
     ...TailwindElement.styles,
@@ -32,8 +37,6 @@ export class ExDropdownMenu extends TailwindElement {
 
       .ex-menu {
         position: absolute;
-
-        visibility: hidden;
         opacity: 0;
         transform: scale(0.8);
         transition:
@@ -42,7 +45,6 @@ export class ExDropdownMenu extends TailwindElement {
       }
 
       .ex-menu[open="true"] {
-        visibility: visible;
         opacity: 1;
         transform: scale(1);
       }

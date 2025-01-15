@@ -16,6 +16,7 @@
     "@lit/localize": "^0.12.2",
     "@lit/task": "^1.0.1",
     "@shoelace-style/shoelace": "^2.18.0",
+    "@tanstack/lit-table": "^8.20.5",
     "@types/qs": "^6.9.17",
     "axios": "^1.7.9",
     "axios-cache-adapter": "^2.7.3",

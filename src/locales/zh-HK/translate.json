@@ -31,10 +31,21 @@
   "efWh8Lmsk4F7uYC76LiFg": "請輸入電子郵件",
   "fMBGcHZ74F6D_S3-bF3cP": "請輸入密碼",
   "gWdzqffu61uCKOqb3-VIM": "輸入提幣金額",
+  "history": {
+    "withdraw": {
+      "status": {
+        "cancel": "已取消",
+        "failure": "提幣失敗",
+        "processing": "處理中",
+        "success": "提幣成功",
+        "waiting": "審核中"
+      }
+    }
+  },
   "lGsrMtXGUODjwRq0S6SBt": "請輸入密码",
   "m233lVVFcr4QDwfq2ycFP": "溫馨提示：非所有交易所均接受 USDE 存款，請確認後再進行 USDE 提款。",
   "nTzlVuCOfSvg4CC4x7TmD": "Exworth 用戶",
-  "tAkKt6TgvSxv07JogOP3r": "錢包餘額：",
+  "tAkKt6TgvSxv07JogOP3r": "錢包餘額",
   "vyAfAUot6ygBMGuT8qzRH": "輸入正整數",
   "w2A6KG_nqADy3pjNsC9I8": "隐藏资产 = 0",
   "wLwf2OXANiga0mKqyLe-0": "提幣地址",

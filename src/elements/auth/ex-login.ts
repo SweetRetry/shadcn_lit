@@ -1,3 +1,4 @@
+import "@/components/common/app-link";
 import "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-upload";
@@ -26,8 +27,12 @@ export class ExLogin extends TailwindElement {
   rules = {
     email: [
       {
-        type: "email",
+        type: "required",
         message: t("efWh8Lmsk4F7uYC76LiFg"),
+      },
+      {
+        type: "email",
+        message: "請輸入正確的郵箱地址",
       },
     ],
 
@@ -62,7 +67,7 @@ export class ExLogin extends TailwindElement {
     return html`
       <div class="flex h-full items-center">
         <div class="mx-auto w-full max-w-md">
-          <div class="rounded-lg border border-border p-8">
+          <div class="rounded-lg border border-border p-8 mobile:border-none">
             <div class="w-40">${AppLogo}</div>
             <h2 class="my-6 text-2xl font-bold">
               ${t("3ZWnotiAjXAIshLbWfxiX")}
@@ -115,15 +120,16 @@ export class ExLogin extends TailwindElement {
             </ex-form>
           </div>
 
-          <p class="mt-6 text-center text-sm">
+          <div class="text-center text-sm mt-2">
             ${t("9pWhvPa9ZuGel4sLL8shr")}
-            <a
-              class="cursor-pointer font-semibold text-primary hover:text-primary/90"
-              @click=${() => handleModuleChange(EX_MODULE_ENUM.Register)}
-            >
-              ${t("wl1Ykc8yBKy9VxMsaOsVd")}
-            </a>
-          </p>
+            <app-link .module=${EX_MODULE_ENUM.Register}>
+              <p
+                class="cursor-pointer font-semibold text-primary hover:text-primary/90"
+              >
+                ${t("wl1Ykc8yBKy9VxMsaOsVd")}
+              </p>
+            </app-link>
+          </div>
         </div>
       </div>
     `;

@@ -26,6 +26,9 @@ importers:
       '@shoelace-style/shoelace':
         specifier: ^2.18.0
         version: 2.18.0(@types/react@18.3.12)
+      '@tanstack/lit-table':
+        specifier: ^8.20.5
+        version: 8.20.5(lit@3.2.1)
       '@types/qs':
         specifier: ^6.9.17
         version: 6.9.17
@@ -439,6 +442,16 @@ packages:
   '@shoelace-style/shoelace@2.18.0':
     resolution: {integrity: sha512-uzpL0+8Qm8aE2ArcXBcKHkaPc6l7ymuVaN6xJM0yd2o3talcoXpuP+gRBsgggSZKuuJEa+JkEuLDdzzFnE/+jw==}
     engines: {node: '>=14.17.0'}
+
+  '@tanstack/lit-table@8.20.5':
+    resolution: {integrity: sha512-5Quam5W8A7VNw32NvV6Up/oylyRg3EGdcH3/vaFeKQHVxI/KiX0W+XWoNw36cDkfRjKEIgOMe+ymis+inobX8A==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      lit: ^3.1.3
+
+  '@tanstack/table-core@8.20.5':
+    resolution: {integrity: sha512-P9dF7XbibHph2PFRz8gfBKEXEY/HJPOhym8CHmjF8y3q5mWpKx9xtZapXQUWCgkqvsK0R46Azuz+VaxD4Xl+Tg==}
+    engines: {node: '>=12'}
 
   '@types/big.js@6.2.2':
     resolution: {integrity: sha512-e2cOW9YlVzFY2iScnGBBkplKsrn2CsObHQ2Hiw4V1sSyiGbgWL8IyqE3zFi1Pt5o1pdAtYkDAIsF3KKUPjdzaA==}
@@ -1418,6 +1431,13 @@ snapshots:
       qr-creator: 1.0.0
     transitivePeerDependencies:
       - '@types/react'
+
+  '@tanstack/lit-table@8.20.5(lit@3.2.1)':
+    dependencies:
+      '@tanstack/table-core': 8.20.5
+      lit: 3.2.1
+
+  '@tanstack/table-core@8.20.5': {}
 
   '@types/big.js@6.2.2': {}
 

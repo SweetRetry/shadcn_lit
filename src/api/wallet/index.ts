@@ -1,5 +1,6 @@
-import { VerifyValues } from "@/components/verify/ex-verify-modal";
+import { VerifyValues } from "@/components/verify/ex-verify-form";
 import { ExResponse, request } from "..";
+import { DepositConfig, WalletNetwork } from "./types";
 
 // 钱包账户
 export const getUserAccount = (): Promise<ExResponse> =>
@@ -42,9 +43,26 @@ export const postWalletWithdraw = (
     },
   });
 
-export const getWalletRecord = (params: {
+export const getWalletDepositHistory = (params: {
   coin?: string;
-  type: "Deposit" | "Withdraw";
   pageID: number;
   pageSize: number;
-}): Promise<ExResponse> => request.get("/wallet/record", { params });
+}): Promise<ExResponse> =>
+  request.get("/wallet/record", {
+    params: {
+      ...params,
+      type: "Deposit",
+    },
+  });
+
+export const getWalletWithdrawHistory = (params: {
+  coin?: string;
+  pageID: number;
+  pageSize: number;
+}): Promise<ExResponse> =>
+  request.get("/wallet/record", {
+    params: {
+      ...params,
+      type: "Withdraw",
+    },
+  });

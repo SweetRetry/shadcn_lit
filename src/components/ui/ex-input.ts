@@ -1,20 +1,14 @@
 import { cn } from "@/utils/style";
 import { consume } from "@lit/context";
-import { css, CSSResult, html } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import TailwindElement from "../tailwind-element";
 import { formContext, FormContextProvide } from "./ex-form/context";
 
 @customElement("ex-input")
 export class ExInput extends TailwindElement {
-  static styles: CSSResult[] = [
-    ...TailwindElement.styles,
-    css`
-      .ex-form-item-control-input {
-        border-color: hsl(var(--ex-input-border-color));
-      }
-    `,
-  ];
+  @consume({ context: formContext })
+  formContext?: FormContextProvide;
 
   @property()
   name?: string;
@@ -25,13 +19,16 @@ export class ExInput extends TailwindElement {
   @property()
   type?: string = "text";
 
-  @consume({ context: formContext })
-  formContext?: FormContextProvide;
+  @property({ type: Boolean })
+  disabled: boolean = false;
 
-  @state() private hasPrefix = false;
-  @state() private hasSuffix = false;
+  @property({ type: String })
+  value = "";
 
-  @property({ type: String }) value = "";
+  @state()
+  hasPrefix = false;
+  @state()
+  hasSuffix = false;
 
   firstUpdated() {
     this.shadowRoot?.addEventListener("slotchange", () => {
@@ -46,6 +43,7 @@ export class ExInput extends TailwindElement {
   }
 
   async handleChange(e: Event) {
+    if (this.disabled) return;
     const _value = (e.target as HTMLInputElement).value;
     this.value = _value;
     if (this.name) this.formContext?.setFieldValue(this.name, _value);
@@ -58,12 +56,13 @@ export class ExInput extends TailwindElement {
         <slot name="prefix"></slot>
       </span>
       <input
+        ?disabled=${this.disabled}
         type=${this.type}
         .value=${this.value}
         placeholder=${this.placeholder}
         @input=${this.handleChange}
         class=${cn(
-          "ex-form-item-control-input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-none",
+          "border-[hsl(var(--ex-input-border-color))] flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-none",
           {
             "pl-10": this.hasPrefix,
             "pr-10": this.hasSuffix,

@@ -10,9 +10,6 @@ export class ExCheckbox extends TailwindElement {
   @property({ type: Boolean })
   disabled = false;
 
-  @property({ type: String })
-  label = "";
-
   onCheckedChange = () => {
     this.checked = !this.checked;
     this.dispatchEvent(new CustomEvent("change"));
@@ -20,18 +17,20 @@ export class ExCheckbox extends TailwindElement {
 
   render() {
     return html`
-      <label class="flex cursor-pointer text-sm">
+      <div
+        class="user-select-none flex cursor-pointer text-sm"
+        @click=${this.onCheckedChange}
+      >
         <input
           type="checkbox"
-          class="h-5 w-5 accent-primary"
+          class="h-4 w-4 accent-primary"
           ?checked=${this.checked}
           ?disabled=${this.disabled}
-          @change=${this.onCheckedChange}
         />
-        <span class="ml-2">
-          <slot>${this.label} </slot>
-        </span>
-      </label>
+        <label class="ml-2 cursor-pointer">
+          <slot> </slot>
+        </label>
+      </div>
     `;
   }
 }

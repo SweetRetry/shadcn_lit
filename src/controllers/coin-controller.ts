@@ -36,7 +36,6 @@ export class CoinController implements ReactiveController {
   }
 
   hostDisconnected() {
-    // 如果需要在组件销毁时进行操作，可以在这里实现
   }
 
   async fetchCoinList() {
@@ -70,6 +69,7 @@ export class CoinController implements ReactiveController {
       console.error("Failed to fetch coin list:", error);
     } finally {
       this.isGettingCoinList = false;
+      this.host.requestUpdate()
     }
   }
 
@@ -77,7 +77,7 @@ export class CoinController implements ReactiveController {
     return `/svgs/coin/${coinCode}.svg`;
   };
 
-  getCoinPrecision = (coinCode: string) => {
-    return this.coinMap?.get(coinCode)?.precision || 6;
+  static getCoinPrecision = (coinCode: string) => {
+    return this.cachedCoinPrecisionMap?.get(coinCode)?.precision || 6;
   };
 }

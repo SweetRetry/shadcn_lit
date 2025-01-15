@@ -48,7 +48,7 @@ const resInterceptor = (res: AxiosResponse) => {
   if (config.method?.toLowerCase() !== "get") {
     if (statusCode !== 200) {
       console.log("resInterceptor -> msg", msg);
-      message.error(msg, { duration: 0 });
+      message.error(msg);
     }
   }
 

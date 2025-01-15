@@ -90,6 +90,7 @@ export class WalletController implements ReactiveController {
       console.error("Failed to fetch coin list:", error);
     } finally {
       this.isGettingWalletInfo = false;
+      this.host.requestUpdate();
     }
   }
   getCoinAvailableAmount(coinCode: string) {
