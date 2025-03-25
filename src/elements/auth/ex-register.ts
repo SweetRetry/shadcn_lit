@@ -5,11 +5,11 @@ import "@/components/ui/ex-input";
 import "@/components/ui/ex-upload";
 import "@/components/verify/ex-verify-form";
 
-import { postSendRegisterCaptcha, postUserRegister } from "@/api/user";
+import { postSendRegisterCaptcha, postUserRegister } from "@/api/auth";
 import TailwindElement from "@/components/tailwind-element";
 import { ExForm } from "@/components/ui/ex-form/ex-form";
 
-import { PostUserRegisterParams } from "@/api/user/types";
+import { PostUserRegisterParams } from "@/api/auth/types";
 import { AppLogo } from "@/components/common/app-logo";
 import { ExVerifyForm } from "@/components/verify/ex-verify-form";
 import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";

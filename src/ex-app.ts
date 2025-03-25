@@ -4,11 +4,12 @@ import "@/components/ui/ex-button";
 import "@/components/ui/ex-dropdown";
 import "@/components/ui/ex-menu";
 import "@/components/ui/ex-spinner";
-import "@/elements/user/my/ex-messages";
+import "@/elements/my/messages/ex-messages";
+
 import "@/providers/i18n-provider";
 
 import { EX_MODLUES, EX_MODULE_ENUM } from "@/utils/module";
-import { html, nothing, PropertyValues } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { Globe, Moon, Sun, UserCircle2 } from "lucide";
 import { AppLogo } from "./components/common/app-logo";
@@ -85,6 +86,13 @@ export class ExApp extends TailwindElement {
     // 监听浏览器前进、后退操作
     window.addEventListener("popstate", this.handlePopState);
 
+    setSystemTheme((theme) => {
+      localStorage.setItem(AppThemeKey, theme);
+      document.documentElement.classList.toggle(
+        this.theme === "system" ? theme : this.theme,
+      );
+    });
+
     // 刷新页面时恢复状态
     const savedState =
       sessionStorage.getItem(LOCATION_CACHE) ||
@@ -140,15 +148,6 @@ export class ExApp extends TailwindElement {
       this.loading = false;
     }
   }
-
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    setSystemTheme((theme) => {
-      localStorage.setItem(AppThemeKey, theme);
-      document.documentElement.classList.toggle(
-        this.theme === "system" ? theme : this.theme,
-      );
-    });
-  }
   private renderDynamicElement(tag: string | typeof nothing) {
     if (!tag || tag === nothing) return nothing;
     const dynamicElement = document.createElement(tag);
@@ -160,7 +159,7 @@ export class ExApp extends TailwindElement {
     return html`${dynamicElement}`;
   }
 
-  renderSider() {
+  renderSiderbar() {
     if (this.currentModule?.hideSider) return nothing;
 
     return html` <nav class="mr-4 min-w-[200px] mobile:hidden">
@@ -178,71 +177,73 @@ export class ExApp extends TailwindElement {
         ?defaultLang=${this.config?.i18n?.defaultLang}
         ?resourceUrl=${this.config?.i18n?.resourceUrl}
       >
-        <main class="ex-container relative">
-          <header
-            class="flex h-16 w-full items-center justify-between px-8 mobile:px-4"
-          >
-            <div class="w-32">${AppLogo}</div>
+        <ex-user-provider>
+          <main class="ex-container relative">
+            <header
+              class="flex h-16 w-full items-center justify-between px-8 mobile:px-4"
+            >
+              <div class="w-32">${AppLogo}</div>
 
-            <div class="space-x-2">
-              <ex-messages
-                .pageSize=${4}
-                type="popup"
-                class="mobile:hidden"
-              ></ex-messages>
+              <div class="space-x-2">
+                <ex-messages
+                  .pageSize=${4}
+                  type="popup"
+                  class="mobile:hidden"
+                ></ex-messages>
 
-              <ex-dropdown placement="bottom-end">
-                <ex-button slot="trigger" size="icon" variant="ghost">
-                  ${createLucideIcon(UserCircle2)}
-                </ex-button>
+                <ex-dropdown placement="bottom-end">
+                  <ex-button slot="trigger" size="icon" variant="ghost">
+                    ${createLucideIcon(UserCircle2)}
+                  </ex-button>
 
-                <ex-menu
-                  .items=${[
-                    {
-                      label: "Log Out",
-                      key: "logout",
-                    },
-                  ]}
-                  @select=${(e: CustomEvent<{ key: string }>) => {
-                    if (e.detail.key === "logout") {
-                      this.switchModule(EX_MODULE_ENUM.Login);
-                    }
+                  <ex-menu
+                    .items=${[
+                      {
+                        label: "Log Out",
+                        key: "logout",
+                      },
+                    ]}
+                    @select=${(e: CustomEvent<{ key: string }>) => {
+                      if (e.detail.key === "logout") {
+                        this.switchModule(EX_MODULE_ENUM.Login);
+                      }
+                    }}
+                  >
+                  </ex-menu>
+                </ex-dropdown>
+
+                <ex-button
+                  size="icon"
+                  variant="ghost"
+                  @click=${() => {
+                    document.documentElement.classList.toggle("dark");
+                    this.theme = this.theme === "dark" ? "light" : "dark";
+                    localStorage.setItem(AppThemeKey, this.theme);
                   }}
                 >
-                </ex-menu>
-              </ex-dropdown>
+                  ${this.theme === "light" ? MoonIcon : SunIcon}
+                </ex-button>
 
-              <ex-button
-                size="icon"
-                variant="ghost"
-                @click=${() => {
-                  document.documentElement.classList.toggle("dark");
-                  this.theme = this.theme === "dark" ? "light" : "dark";
-                  localStorage.setItem(AppThemeKey, this.theme);
-                }}
-              >
-                ${this.theme === "light" ? MoonIcon : SunIcon}
-              </ex-button>
+                ${LocaleToggle()}
+              </div>
+            </header>
 
-              ${LocaleToggle()}
-            </div>
-          </header>
-
-          <section
-            class="flex w-full overflow-x-hidden mobile:px-4"
-            style="height:calc(100vh - 64px)"
-          >
-            ${this.renderSider()}
             <section
-              style="width:calc(100% - 200px)"
-              class="mx-auto max-w-[1200px] px-4 mobile:!w-full mobile:px-0"
+              class="flex w-full overflow-x-hidden mobile:px-4"
+              style="height:calc(100vh - 64px)"
             >
-              <ex-spinner .loading=${this.loading}>
-                ${this.renderDynamicElement(this.tag)}
-              </ex-spinner>
+              ${this.renderSiderbar()}
+              <section
+                style="width:calc(100% - 200px)"
+                class="mx-auto max-w-[1200px] px-4 mobile:!w-full mobile:px-0"
+              >
+                <ex-spinner .loading=${this.loading}>
+                  ${this.renderDynamicElement(this.tag)}
+                </ex-spinner>
+              </section>
             </section>
-          </section>
-        </main>
+          </main>
+        </ex-user-provider>
       </i18n-provider>
     `;
   }

@@ -117,6 +117,20 @@ export class ExTable<T = any> extends TailwindElement {
               </tr>`}
         </tbody>
       </table>
+    `;
+  };
+
+  protected render() {
+    const table = new TableController<T>(this).table({
+      columns: this.columns,
+      data: this.dataSource,
+      getCoreRowModel: getCoreRowModel(),
+    });
+
+    return html`
+      <section class="relative w-full overflow-x-auto overflow-y-hidden">
+        ${this.renderTable(table)}
+      </section>
       ${this.showTotal || this.pagination
         ? html` <div class="mt-2 flex justify-between px-2">
             <div class="text-sm text-gray-500">
@@ -133,7 +147,7 @@ export class ExTable<T = any> extends TailwindElement {
               </ex-button>
               <ex-button
                 variant="secondary"
-                .disabeld=${this.current === this.totalPage}
+                .disabled=${this.current === this.totalPage}
                 @click=${this.next}
               >
                 Next
@@ -141,20 +155,6 @@ export class ExTable<T = any> extends TailwindElement {
             </div>`}
           </div>`
         : nothing}
-    `;
-  };
-
-  protected render() {
-    const table = new TableController<T>(this).table({
-      columns: this.columns,
-      data: this.dataSource,
-      getCoreRowModel: getCoreRowModel(),
-    });
-
-    return html`
-      <section class="relative w-full overflow-x-auto overflow-y-hidden">
-        ${this.renderTable(table)}
-      </section>
     `;
   }
 }

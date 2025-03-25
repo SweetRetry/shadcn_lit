@@ -3,11 +3,11 @@ import "@/components/ui/ex-form/ex-form";
 import "@/components/ui/ex-input";
 import "@/components/ui/ex-upload";
 
-import { postUserLogin } from "@/api/user";
+import { postUserLogin } from "@/api/auth";
 import TailwindElement from "@/components/tailwind-element";
 import { ExForm } from "@/components/ui/ex-form/ex-form";
 
-import { PostUserLoginParams } from "@/api/user/types";
+import { PostUserLoginParams } from "@/api/auth/types";
 import { AppLogo } from "@/components/common/app-logo";
 import { EX_MODULE_ENUM, handleModuleChange } from "@/utils/module";
 import { produce } from "immer";

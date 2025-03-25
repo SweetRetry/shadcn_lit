@@ -1,4 +1,4 @@
-import { getUserAccount } from "@/api/wallet";
+import { getUserAccount } from "@/api/my/wallet";
 
 import { ReactiveController, ReactiveControllerHost } from "lit";
 

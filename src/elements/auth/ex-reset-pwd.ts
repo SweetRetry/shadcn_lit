@@ -4,11 +4,11 @@ import "@/components/ui/ex-input";
 import "@/components/ui/ex-upload";
 import "@/components/verify/ex-verify-form";
 
-import { postResetUserPwd, postSendForgetPwdCaptcha } from "@/api/user";
+import { postResetUserPwd, postSendForgetPwdCaptcha } from "@/api/auth";
 import TailwindElement from "@/components/tailwind-element";
 import { ExForm } from "@/components/ui/ex-form/ex-form";
 
-import { PostResetPwdParams } from "@/api/user/types";
+import { PostResetPwdParams } from "@/api/auth/types";
 import { AppLogo } from "@/components/common/app-logo";
 import { ExVerifyForm, VerifyConfig } from "@/components/verify/ex-verify-form";
 import { EX_MODULE_ENUM } from "@/utils/module";

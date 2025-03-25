@@ -1,4 +1,4 @@
-import { ExResponse } from "@/api";
+import { ExResponse } from "@/api/request";
 import "@/components/ui/ex-button";
 import "@/components/ui/ex-form/ex-form";
 import { ExForm } from "@/components/ui/ex-form/ex-form";

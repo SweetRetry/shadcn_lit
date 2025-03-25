@@ -2,6 +2,7 @@ import { ExApp } from "@/ex-app";
 import { translate as t } from "lit-i18n";
 
 export enum EX_MODULE_ENUM {
+  Dashboard = "ex-dashboard",
   Login = "ex-login",
   Register = "ex-register",
   ResetPwd = "ex-reset-pwd",
@@ -31,25 +32,29 @@ export const EX_MODLUES: Record<
     module: () => import("@/elements/auth/ex-reset-pwd"),
     hideSider: true,
   },
+  [EX_MODULE_ENUM.Dashboard]: {
+    name: t("Dashboard"),
+    module: () => import("@/elements/my/dashboard/ex-dashboard"),
+  },
   [EX_MODULE_ENUM.Wallet]: {
     name: t("ZbyFlQ82c4TkhC-Te0z0_"),
-    module: () => import("@/elements/user/wallet/ex-wallet"),
+    module: () => import("@/elements/my/wallet/ex-wallet"),
   },
   [EX_MODULE_ENUM.Deposit]: {
     name: t("IAm45vKTSJbBqHfSfcDm8"),
-    module: () => import("@/elements/user/wallet/features/ex-deposit"),
+    module: () => import("@/elements/my/wallet/features/ex-deposit"),
   },
   [EX_MODULE_ENUM.Withdraw]: {
     name: t("LulHZBEkbWF9nh5mTOSkw"),
-    module: () => import("@/elements/user/wallet/features/ex-withdraw"),
+    module: () => import("@/elements/my/wallet/features/ex-withdraw"),
   },
   [EX_MODULE_ENUM.Hisotry]: {
     name: "History",
-    module: () => import("@/elements/user/wallet/features/records/ex-history"),
+    module: () => import("@/elements/my/wallet/features/records/ex-history"),
   },
   [EX_MODULE_ENUM.Messages]: {
     name: "Messages",
-    module: () => import("@/elements/user/my/ex-messages"),
+    module: () => import("@/elements/my/messages/ex-messages"),
   },
 };
 
