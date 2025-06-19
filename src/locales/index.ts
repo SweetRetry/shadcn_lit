@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-// @ts-ignore
+
 import { AppI18nNextKey } from "@/config/storageKey";
 import Cache from "i18next-localstorage-cache";
 import { initLitI18n } from "lit-i18n";
@@ -51,7 +51,7 @@ export class I18nUtil {
         return i18next.changeLanguage(locale);
       }
 
-      /* @vite-ignore */
+
       const resources = await import(resourcePath);
       i18next.addResourceBundle(locale, "translation", resources.default);
       I18nCacheMap.set(locale, resourcePath);
